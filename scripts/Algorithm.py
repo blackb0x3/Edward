@@ -34,9 +34,9 @@ class Algorithm:
                 self.newcollection = copy.deepcopy(self.oldcollection)
                 self.starttime = datetime.now()
                 self.execute()
+                self.executed = self.has_worked()
                 self.endtime = datetime.now()
                 self.timetaken = self.endtime - self.starttime
-                self.executed = True
         except AlgorithmError as err:
             print("Algorithm runtime error:", err)
         finally:
