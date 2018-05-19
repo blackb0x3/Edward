@@ -34,7 +34,6 @@ class InsertionSort(Sort):
     def execute(self):
         """
         Sorts a collection by using the insertion sort algorithm.
-        :param self.newcollection: Collection to sort.
         """
 
         length = len(self.newcollection)
@@ -54,7 +53,6 @@ class TraditionalBubbleSort(Sort):
     def execute(self):
         """
         Sorts a collection by using the traditional bubble sort algorithm.
-        :param self.newcollection: Collection to sort.
         """
 
         length = len(self.newcollection)
@@ -71,7 +69,6 @@ class OptimisedBubbleSort(Sort):
     def execute(self):
         """
         Sorts a collection by using the optimised bubble sort algorithm.
-        :param self.newcollection: Collection to sort.
         """
 
         length = len(self.newcollection)
@@ -89,12 +86,29 @@ class OptimisedBubbleSort(Sort):
             if not swapped:
                 break
 
+
+class SelectionSort(Sort):
+    def execute(self):
+        """
+        Sorts a collection using the selection sort algorithm.
+        """
+
+        length = len(self.newcollection)
+
+        for i in range(length):
+            first = i
+
+            for j in range(i + 1, length):
+                if self.newcollection[first] > self.newcollection[j]:
+                    first = j
+
+            temp = self.newcollection[i]
+            self.newcollection[i] = self.newcollection[first]
+            self.newcollection[first] = temp
+
+
 ############### ALGORITHMS TO DO ###############
 """
-class Sort(Sort):
-    def execute(self):
-
-
 class Sorts(object):
     @staticmethod
     def selectionSort(self.newcollection):
