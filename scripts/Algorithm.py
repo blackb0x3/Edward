@@ -60,6 +60,7 @@ class Algorithm:
     def generate_collection(self, min=1, max=1000, size=10):
         coll = np.random.sample(range(min, max + 1), size)
 
+        # shuffle collection using fisher yates
         s = size
 
         while (s > 0):
