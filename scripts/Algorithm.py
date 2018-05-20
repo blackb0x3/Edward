@@ -1,5 +1,7 @@
 from datetime import datetime
 import copy
+import numpy as np
+import random
 
 class Algorithm:
     """
@@ -10,11 +12,10 @@ class Algorithm:
         """
         Algorithm constructor
         :param data: The collection to perform the algorithm on.
-        :raise: ValueError if the collection is null or empty.
         """
 
         if data is None or not data:
-            raise ValueError("data cannot be null or empty")
+            self.generate_collection()
         else:
             self.oldcollection = data
             self.starttime = None
@@ -55,6 +56,29 @@ class Algorithm:
         """
 
         raise NotImplementedError("Please use the algorithm's implemented execute() function.")
+
+    def generate_collection(self, min=1, max=1000, size=10):
+        coll = np.random.sample(range(min, max + 1), size)
+
+        s = size
+
+        while (s > 0):
+            s = s - 1
+            i = np.floor(random.random() * s)
+
+            temp = coll[s]
+            coll[s] = coll[i]
+            coll[i] = temp
+
+        self.oldcollection = coll
+
+    @staticmethod
+    def metadata():
+        """
+        Returns the algorithm's metadata - space complexity, time complexity, algorithm description etc.
+        """
+
+        raise NotImplementedError("Please use the algorithm's implemented metadata() function.")
 
 
 class AlgorithmError(Exception):
