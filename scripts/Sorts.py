@@ -31,6 +31,16 @@ class Sort(Algorithm):
 
 
 class InsertionSort(Sort):
+    description = """
+An in-place, comparison-based sorting algorithm. It sorts array by shifting elements one by one and inserting the right 
+element at the right position.
+"""
+
+    steps = []
+    best_case = ""
+    average_case = ""
+    worst_case = ""
+
     def execute(self):
         """
         Sorts a collection by using the insertion sort algorithm.
@@ -48,6 +58,12 @@ class InsertionSort(Sort):
 
             self.newcollection[j + 1] = key
 
+    @staticmethod
+    def metadata():
+        return {
+            "description": InsertionSort.description.replace('\n', '')
+        }
+
 
 class TraditionalBubbleSort(Sort):
     def execute(self):
@@ -63,6 +79,10 @@ class TraditionalBubbleSort(Sort):
                     temp = self.newcollection[j]
                     self.newcollection[j] = self.newcollection[j + 1]
                     self.newcollection[j + 1] = temp
+
+    @staticmethod
+    def metadata():
+        return {}
 
 
 class OptimisedBubbleSort(Sort):
@@ -86,6 +106,10 @@ class OptimisedBubbleSort(Sort):
             if not swapped:
                 break
 
+    @staticmethod
+    def metadata():
+        return {}
+
 
 class SelectionSort(Sort):
     def execute(self):
@@ -105,6 +129,10 @@ class SelectionSort(Sort):
             temp = self.newcollection[i]
             self.newcollection[i] = self.newcollection[first]
             self.newcollection[first] = temp
+
+    @staticmethod
+    def metadata():
+        return {}
 
 
 ############### ALGORITHMS TO DO ###############
