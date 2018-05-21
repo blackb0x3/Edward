@@ -8,21 +8,38 @@ class Algorithm:
     Base algorithm class.
     """
 
-    def __init__(self, data=None):
+    description = ""
+    steps = []
+    best_case = ""
+    average_case = ""
+    worst_case = ""
+
+    def __init__(self, data=None, size=10):
         """
         Algorithm constructor
         :param data: The collection to perform the algorithm on.
         """
 
         if data is None or not data:
-            self.generate_collection()
+            self.generate_collection(size)
         else:
             self.oldcollection = data
-            self.starttime = None
-            self.endtime = None
-            self.timetaken = None
-            self.newcollection = None
-            self.executed = False
+
+        self.starttime = None
+        self.endtime = None
+        self.timetaken = None
+        self.newcollection = None
+        self.executed = False
+
+    def __dict__(self):
+        return {
+            "successful_execution": self.executed,
+            "input": self.oldcollection,
+            "output": self.newcollection,
+            "execution_start": self.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+            "execution_end": self.endtime.strftime("%Y-%m-%d %H:%M:%S"),
+            "execution_time": str(self.timetaken)
+        }
 
     def run(self):
         """
@@ -40,8 +57,8 @@ class Algorithm:
                 self.timetaken = self.endtime - self.starttime
         except AlgorithmError as err:
             print("Algorithm runtime error:", err)
-        finally:
-            return self
+        except RuntimeError as run_err:
+            print("Error: ", run_err)
 
     def has_worked(self):
         """
@@ -58,20 +75,26 @@ class Algorithm:
         raise NotImplementedError("Please use the algorithm's implemented execute() function.")
 
     def generate_collection(self, min=1, max=1000, size=10):
-        coll = np.random.sample(range(min, max + 1), size)
+        coll = [int(v) for v in np.random.choice(range(min, max + 1), size)]
 
-        # shuffle collection using fisher yates
-        s = size
+        shuffles = 5
 
-        while (s > 0):
-            s = s - 1
-            i = np.floor(random.random() * s)
+        # shuffle collection 5 times using fisher yates
+        for x in range(shuffles):
+            s = size
 
-            temp = coll[s]
-            coll[s] = coll[i]
-            coll[i] = temp
+            while (s > 0):
+                s = s - 1
+                i = int(np.floor(np.random.random() * s) - 1)
 
-        self.oldcollection = coll
+                if i < 0:
+                    i = 0
+
+                temp = coll[s]
+                coll[s] = coll[i]
+                coll[i] = temp
+
+        self.oldcollection = list(coll)
 
     @staticmethod
     def metadata():
