@@ -105,3 +105,6 @@ venv.bak/
 
 # PyCharm
 .idea/*
+
+# Edward folders and files
+images/*
