@@ -1,4 +1,4 @@
-from flask_restful import Resource, abort, reqparse, output_json
+from flask_restful import Resource, abort, reqparse
 
 from scripts.Sorts import *
 from scripts.Graph import Graph
@@ -9,6 +9,14 @@ algorithmmap = {
     "optimised-bubble-sort": OptimisedBubbleSort,
     "traditional-bubble-sort": TraditionalBubbleSort,
 }
+
+
+class AlgorithmListController(Resource):
+    def get(self):
+        return {
+            "available_algorithms": list(algorithmmap.keys())
+        }, 200
+
 
 class AlgorithmController(Resource):
     valid_actions = [
@@ -30,22 +38,17 @@ class AlgorithmController(Resource):
         else:
             return self.run_algorithm(algorithm=algorithm)
 
-    def get(self, algorithmname=None):
+    def get(self, algorithmname):
         """
         Algorithm metadata - space complexity, time complexity, description etc.
         """
 
-        if algorithmname is None:
-            return {
-                "available_algorithms": algorithmmap.keys()
-            }, 200
-        else:
-            self.check_algorithm_exists(algorithmname)
+        self.check_algorithm_exists(algorithmname)
 
-            try:
-                return algorithmmap[algorithmname].metadata(), 200
-            except NotImplementedError as err:
-                abort(501, message="There is no metadata available for the {} algorithm.".format(algorithmname))
+        try:
+            return algorithmmap[algorithmname].metadata(), 200
+        except NotImplementedError as err:
+            abort(501, message="There is no metadata available for the {} algorithm.".format(algorithmname))
 
     def post(self, algorithmname):
         """
@@ -97,20 +100,23 @@ class AlgorithmController(Resource):
                 repeats  = options['repeats'] # TODO must be at least 3
 
                 algorithm_results = {}
+                algorithm_results_json = {}
 
                 for size in range(min_size, max_size + 1, jump):
                     results_for_this_size = []
+                    results_for_this_size_json = []
 
                     for i in range(repeats):
-                        algorithm = algorithmmap[algorithmname](size=size)
-                        results_for_this_size.append(self.run_algorithm(algorithm=algorithm).__dict__())
+                        algorithm = self.run_algorithm(algorithm=algorithmmap[algorithmname](size=size))
+                        results_for_this_size.append(algorithm)
+                        results_for_this_size_json.append(algorithm.__dict__())
 
                     algorithm_results.update({size: results_for_this_size})
+                    algorithm_results_json.update({size: results_for_this_size_json})
 
                 if makegraph is True:
-                    graphfile = Graph.new(algorithm_results)
-                    algorithm_results['graph'] = graphfile
+                    algorithm_results_json['graph'] = Graph.new(algorithm_results)
                 else:
-                    algorithm_results['graph'] = None
+                    algorithm_results_json['graph'] = None
 
-                return algorithm_results, 200
+                return algorithm_results_json, 200

@@ -14,14 +14,16 @@ class Algorithm:
     average_case = ""
     worst_case = ""
 
-    def __init__(self, data=None, size=10):
+    def __init__(self, *args, **kwargs):
         """
         Algorithm constructor
-        :param data: The collection to perform the algorithm on.
         """
 
+        data = kwargs.get('data', None)
+        size = kwargs.get('size', 10)
+
         if data is None or not data:
-            self.generate_collection(size)
+            self.generate_collection(size=size)
         else:
             self.oldcollection = data
 
@@ -74,7 +76,11 @@ class Algorithm:
 
         raise NotImplementedError("Please use the algorithm's implemented execute() function.")
 
-    def generate_collection(self, min=1, max=1000, size=10):
+    def generate_collection(self, *args, **kwargs):
+        min = kwargs.get('min', 1)
+        max = kwargs.get('max', 1000)
+        size = kwargs.get('size', 10)
+
         coll = [int(v) for v in np.random.choice(range(min, max + 1), size)]
 
         shuffles = 5
