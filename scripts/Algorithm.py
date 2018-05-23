@@ -15,6 +15,7 @@ class Algorithm:
     def __init__(self, *args, **kwargs):
         """
         Algorithm constructor
+        :raises ValueError if the collection type is invalid, and will not allow the algorithm to execute() correctly.
         """
 
         data = kwargs.get('data', None)
@@ -24,6 +25,9 @@ class Algorithm:
             self.generate_collection(size=size)
         else:
             self.oldcollection = data
+
+            if self.collection_is_valid() is False:
+                raise ValueError("Incorrect collection type for this algorithm.")
 
         self.starttime = None
         self.endtime = None
@@ -81,6 +85,13 @@ class Algorithm:
         """
 
         raise NotImplementedError("Please use the algorithm's implemented generate_collection() function.")
+
+    def collection_is_valid(self):
+        """
+        Determines if the provided collection is valid for this algorithm.
+        """
+
+        raise NotImplementedError("Please use the algorithm's implemented collection_is_valid() function.")
 
     @staticmethod
     def metadata():

@@ -33,6 +33,15 @@ class Sort(Algorithm):
 
         self.oldcollection = list(coll)
 
+    def collection_is_valid(self):
+        """
+        Determines if the collection is valid for this algorithm.
+        In this case, a list.
+        :return: 2-Tuple: 1: boolean which tells if the collection is a list, the name of the expected type.
+        """
+
+        return isinstance(self.oldcollection, list)
+
     def has_worked(self):
         """
         Determines if the sorting algorithm worked correctly as intended.
