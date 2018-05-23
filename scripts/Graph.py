@@ -27,6 +27,6 @@ class Graph(object):
         plt.yscale('linear')
         filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(30))
         filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)
-        plt.savefig(filepath)
+        plt.savefig(filepath + ".png", bbox_inches='tight')
 
         return filename
