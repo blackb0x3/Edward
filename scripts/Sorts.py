@@ -1,9 +1,37 @@
 from scripts.Algorithm import Algorithm, AlgorithmError
 
+import numpy as np
+
 class Sort(Algorithm):
     """
     Base class for sorting algorithms.
     """
+
+    def generate_collection(self, *args, **kwargs):
+        min = kwargs.get('min', 1)
+        max = kwargs.get('max', 1000)
+        size = kwargs.get('size', 10)
+
+        coll = [int(v) for v in np.random.choice(range(min, max + 1), size)]
+
+        shuffles = 5
+
+        # shuffle collection 5 times using fisher yates
+        for x in range(shuffles):
+            s = size
+
+            while (s > 0):
+                s = s - 1
+                i = int(np.floor(np.random.random() * s) - 1)
+
+                if i < 0:
+                    i = 0
+
+                temp = coll[s]
+                coll[s] = coll[i]
+                coll[i] = temp
+
+        self.oldcollection = list(coll)
 
     def has_worked(self):
         """
