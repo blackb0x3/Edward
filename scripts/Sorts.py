@@ -1,4 +1,5 @@
 from scripts.Algorithm import Algorithm, AlgorithmError
+from models.Stack import Stack
 
 import numpy as np
 
@@ -111,7 +112,7 @@ class TraditionalBubbleSort(Sort):
         length = len(self.newcollection)
 
         for i in range(length):
-            for j in range(0, length - i - 1):
+            for j in range(length - i - 1):
                 if self.newcollection[j] > self.newcollection[j + 1]:
                     temp = self.newcollection[j]
                     self.newcollection[j] = self.newcollection[j + 1]
@@ -172,23 +173,106 @@ class SelectionSort(Sort):
         return {}
 
 
+class QuickSort(Sort):
+    def partition(self, low, high):
+        """
+        Sorts current partition
+        :param low: lowest index of current partition
+        :param high: highest index of current partition
+        :return: sorted partition
+        """
+        index = low - 1
+        pivot = self.newcollection[high]
+
+        for i in range(low, high):
+            if self.newcollection[i] <= pivot:
+                # smaller element's index incremented
+                i += 1
+
+                temp = self.newcollection[index]
+                self.newcollection[index] = self.newcollection[i]
+                self.newcollection[i] = temp
+
+        temp = self.newcollection[index + 1]
+        self.newcollection[index + 1] = self.newcollection[high]
+        self.newcollection[high] = temp
+
+        return index + 1
+
+class RecursiveQuickSort(QuickSort):
+    def execute(self):
+        """
+        Sorts a collection using the recursive version of the quicksort algorithm.
+        """
+
+        self.doIt(0, len(self.newcollection) - 1)
+
+    def doIt(self, low, high):
+        """
+        Actually sorts the collection.
+        :param low: low index of current partition
+        :param high: high index of current partition
+        :return: sorted array
+        """
+        if low < high:
+            pivot = self.partition(low, high)
+
+            self.doIt(low, pivot - 1)
+            self.doIt(pivot + 1, high)
+
+    @staticmethod
+    def metadata():
+        return {}
+
+
+class IterativeQuickSort(QuickSort):
+    def execute(self):
+        """
+        Sorts a collection using the iterative version of the quicksort algorithm.
+        """
+
+        # Create alternate stack
+        size = len(self.newcollection)
+        stack = Stack()
+
+        # initialize top of alt stack
+        top = -1
+
+        # push initial values
+        stack.push(0, size - 1)
+
+        # keep popping from stack if it is not empty
+        while stack.pointer >= 0:
+
+            # pop first and last index of partition
+            high = stack.pop()
+            low = stack.pop()
+
+            # set pivot to it's correct position in order to sort array
+            p = self.partition(low, high)
+
+            if p - 1 > low:
+                stack.push(low, p - 1)
+
+            if p + 1 < high:
+                stack.push(p + 1, high)
+
+        return None
+
+    @staticmethod
+    def metadata():
+        return {}
+
+
 ############### ALGORITHMS TO DO ###############
 """
 class Sorts(object):
-    @staticmethod
-    def selectionSort(self.newcollection):
-        return None
-
     @staticmethod
     def mergeSort(self.newcollection):
         return None
 
     @staticmethod
     def heapSort(self.newcollection):
-        return None
-
-    @staticmethod
-    def quickSort(self.newcollection):
         return None
 
     @staticmethod
