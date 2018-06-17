@@ -108,3 +108,5 @@ venv.bak/
 
 # Edward folders and files
 images/*
+!images/.gitkeep
+!images/graphs/.gitkeep
