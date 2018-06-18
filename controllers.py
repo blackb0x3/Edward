@@ -1,7 +1,9 @@
 from flask_restful import Resource, abort, reqparse
+from flask import send_file
 
 from scripts.Sorts import *
 from scripts.Graph import Graph
+from config import ROOT_DIR
 
 algorithmmap = {
     "insertion-sort": InsertionSort,
@@ -75,6 +77,7 @@ class AlgorithmController(Resource):
             default_options = {
                 'min_size': 5,
                 'max_size': 20,
+
                 'jump': 1,
                 'repeats': 5
             }
@@ -120,3 +123,8 @@ class AlgorithmController(Resource):
                     algorithm_results_json['graph'] = None
 
                 return algorithm_results_json, 200
+
+
+class GraphController(Resource):
+    def get(self, graphid):
+        return send_file(os.path.join(ROOT_DIR, "images/graphs/", graphid), mimetype="image/png")

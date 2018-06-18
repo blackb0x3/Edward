@@ -10,6 +10,7 @@ api = Api(app)
 
 api.add_resource(AlgorithmListController, '/algorithms')
 api.add_resource(AlgorithmController, '/algorithms/<algorithmname>')
+api.add_resource(GraphController, '/algorithms/graphs/<graphid>')
 
 ############# END OF CONTROLLERS ##############
 
