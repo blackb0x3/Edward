@@ -70,7 +70,7 @@ class Sort(Algorithm):
 
 class InsertionSort(Sort):
     description = """
-An in-place, comparison-based sorting algorithm. It sorts array by shifting elements one by one and inserting the right 
+An in-place, comparison-based sorting algorithm. It sorts array by shifting elements one by one and inserting the right
 element at the right position.
 """
 
@@ -262,6 +262,69 @@ class IterativeQuickSort(QuickSort):
     @staticmethod
     def metadata():
         return {}
+
+
+class MergeSort(Sort):
+    description = """"""
+    steps = []
+    best_case = "O(n log n)"
+    average_case = "O(n log n)"
+    worst_case = "O(n log n)"
+
+    @staticmethod
+    def metadata():
+        return {
+            "description": MergeSort.description,
+            "steps": dict(list(enumerate(MergeSort.steps, start=1))),
+            "best_case": MergeSort.best_case,
+            "worst_case": MergeSort.worst_case,
+            "average_case": MergeSort.average_case
+        }
+
+
+class TopDownMergeSort(MergeSort):
+    def execute(self):
+        """Sorts a collection using the top-down implementation of the merge sort."""
+        self.newcollection = self.perform_sort(self.newcollection)
+
+    def perform_sort(self, collection):
+        """Actually performs the sorting algorithm on the provided collection."""
+
+        size = len(collection)
+
+        if size <= 1:
+            return None
+        else:
+            left = list()
+            right = list()
+
+            for i, x in enumerate(collection):
+                if i < size / 2:
+                    left.append(x)
+                else:
+                    right.append(x)
+
+            left = self.perform_sort(left)
+            right = self.perform_sort(left)
+
+        return self.merge(left, right)
+
+    def merge(self, left, right):
+        """Merges two sublists together and returns the ordered union of the two lists."""
+        result = list()
+
+        while len(left) > 0 and len(right) > 0:
+            if left[0] <= right[0]:
+                result.append(left[0])
+                left.pop(0)
+            else:
+                result.append(right[0])
+                right.pop(0)
+
+        return result
+
+
+# TODO Bottom up approach for merge sort
 
 
 ############### ALGORITHMS TO DO ###############
