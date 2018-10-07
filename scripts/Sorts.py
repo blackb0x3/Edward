@@ -284,11 +284,18 @@ class MergeSort(Sort):
 
 class TopDownMergeSort(MergeSort):
     def execute(self):
-        """Sorts a collection using the top-down implementation of the merge sort."""
+        """
+        Sorts a collection using the top-down implementation (i.e. using recursion) of the merge sort.
+        :return: The sorted collection.
+        """
         self.newcollection = self.perform_sort(self.newcollection)
 
     def perform_sort(self, collection):
-        """Actually performs the sorting algorithm on the provided collection."""
+        """
+        Actually performs the sorting algorithm on the provided collection.
+        :param collection: The collection to be sorted.
+        :return: The sorted collection, after merging is completed.
+        """
 
         size = len(collection)
 
@@ -310,7 +317,12 @@ class TopDownMergeSort(MergeSort):
         return self.merge(left, right)
 
     def merge(self, left, right):
-        """Merges two sublists together and returns the ordered union of the two lists."""
+        """
+        Merges two sublists together and returns the ordered union of the two lists.
+        :param left: The first sublist.
+        :param right: The second sublist.
+        :return: The merged collection.
+        """
         result = list()
 
         while len(left) > 0 and len(right) > 0:
@@ -324,16 +336,72 @@ class TopDownMergeSort(MergeSort):
         return result
 
 
-# TODO Bottom up approach for merge sort
+class BottomUpMergeSort(MergeSort):
+    def execute(self):
+        """
+        Sorts a collection using the bottom-up implementation (i.e. using iteration) of the merge sort.
+        :return: The sorted list.
+        """
+        current_size = 1
+
+        while current_size < len(self.newcollection) - 1:
+
+            left = 0
+
+            while left < len(self.newcollection) - 1:
+
+                mid = left + current_size - 1
+
+                right = ((2 * current_size + left - 1, len(self.newcollection) - 1)[2 * current_size + left - 1 > len(self.newcollection)-1])
+                self.merge(left, mid, right)
+                left = left + (current_size * 2)
+
+            current_size *= 2
+
+    def merge(self, left, mid, right):
+        """
+        Merges all sublists together to form the sorted array.
+        :param left: Lower bound.
+        :param mid: Middle value.
+        :param right: Upper bound.
+        :return: A merged collection.
+        """
+        n1 = mid - left + 1
+        n2 = right - mid
+        L = [0] * n1
+        R = [0] * n2
+
+        for i in range(0, n1):
+            L[i] = self.newcollection[left + i]
+
+        for i in range(0, n2):
+            R[i] = self.newcollection[mid + i + 1]
+
+        i, j, k = 0, 0, left
+
+        while i < n1 and j < n2:
+            if L[i] > R[j]:
+                self.newcolllection[k] = R[j]
+                j += 1
+            else:
+                self.newcollection[k] = L[i]
+                i += 1
+            k += 1
+
+        while i < n1:
+            self.newcollection[k] = L[i]
+            i += 1
+            k += 1
+
+        while j < n2:
+            self.newcollection[k] = R[j]
+            j += 1
+            k += 1
 
 
 ############### ALGORITHMS TO DO ###############
 """
 class Sorts(object):
-    @staticmethod
-    def mergeSort(self.newcollection):
-        return None
-
     @staticmethod
     def heapSort(self.newcollection):
         return None
