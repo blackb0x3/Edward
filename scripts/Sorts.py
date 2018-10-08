@@ -472,13 +472,50 @@ class HeapSort(Sort):
             self.heapify(collection, heap_size, largest)
 
 
+class ShellSort(Sort):
+    description = """"""
+    steps = []
+    best_case = ""
+    average_case = ""
+    worst_case = ""
+
+    @staticmethod
+    def metadata():
+        return {
+            "description": ShellSort.description,
+            "steps": dict(list(enumerate(ShellSort.steps, start=1))),
+            "best_case": ShellSort.best_case,
+            "worst_case": ShellSort.worst_case,
+            "average_case": ShellSort.average_case
+        }
+
+    def execute(self):
+        """
+        Executes the shell sort algorithm on the provided collection.
+        :return: The sorted collection.
+        """
+        size = len(self.newcollection)
+        gap = size / 2
+
+        while gap > 0:
+            for i in range(gap, size):
+                temp = self.newcollection[i]
+                j = i
+
+                # shift earlier gap-sorted elements up until the correct
+                # location is found
+                while j >= gap and self.newcollection[j - gap] > temp:
+                    self.newcollection[j] = self.newcollection[j - gap]
+                    j -= gap
+
+                # original element is now in its correct location
+                self.newcollection[j] = temp
+            gap /= 2
+
+
 ############### ALGORITHMS TO DO ###############
 """
 class Sorts(object):
-    @staticmethod
-    def shellSort(self.newcollection):
-        return None
-
     @staticmethod
     def combSort(self.newcollection):
         return None
