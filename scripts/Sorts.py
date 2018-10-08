@@ -3,6 +3,7 @@ from models.Stack import Stack
 
 import numpy as np
 
+
 class Sort(Algorithm):
     """
     Base class for sorting algorithms.
@@ -66,6 +67,21 @@ class Sort(Algorithm):
             return all(self.newcollection[i] >= self.newcollection[i + 1] for i in range(len(self.newcollection) - 1))
         else:
             return all(self.newcollection[i] <= self.newcollection[i + 1] for i in range(len(self.newcollection) - 1))
+
+    def execute(self):
+        """
+        Executes this algorithm's steps on the provided collection.
+        """
+
+        raise NotImplementedError("Please use a specific sort algorithm's execute() function.")
+
+    @staticmethod
+    def metadata():
+        """
+        Returns the algorithm's metadata - space complexity, time complexity, algorithm description etc.
+        """
+
+        raise NotImplementedError("Please use a specific sort algorithm's metadata() function.")
 
 
 class InsertionSort(Sort):
@@ -397,6 +413,7 @@ class BottomUpMergeSort(MergeSort):
             self.newcollection[k] = R[j]
             j += 1
             k += 1
+
 
 
 ############### ALGORITHMS TO DO ###############
