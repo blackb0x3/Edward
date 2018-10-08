@@ -517,10 +517,6 @@ class ShellSort(Sort):
 """
 class Sorts(object):
     @staticmethod
-    def combSort(self.newcollection):
-        return None
-
-    @staticmethod
     def countingSort(self.newcollection):
         return None
 
