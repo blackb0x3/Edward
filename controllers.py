@@ -5,12 +5,22 @@ from scripts.Sorts import *
 from scripts.Graph import Graph
 from config import ROOT_DIR
 
-algorithmmap = {
-    "insertion-sort": InsertionSort,
-    "selection-sort": SelectionSort,
-    "optimised-bubble-sort": OptimisedBubbleSort,
+sorts = {
+    "insertion-sort":          InsertionSort,
+    "selection-sort":          SelectionSort,
+    "optimised-bubble-sort":   OptimisedBubbleSort,
     "traditional-bubble-sort": TraditionalBubbleSort,
+    "recursive-quick-sort":    RecursiveQuickSort,
+    "iterative-quick-sort":    IterativeQuickSort,
+    "top-down-merge-sort":     TopDownMergeSort,
+    "bottom-up-merge-sort":    BottomUpMergeSort,
+    "heap-sort":               HeapSort,
+    "shell-sort":              ShellSort,
+    "counting-sort":           CountingSort,
+    "bucket-sort":             BucketSort
 }
+
+algorithmmap = {**sorts}
 
 
 class AlgorithmListController(Resource):
