@@ -215,6 +215,7 @@ class QuickSort(Sort):
 
         return index + 1
 
+
 class RecursiveQuickSort(QuickSort):
     def execute(self):
         """
