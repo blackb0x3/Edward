@@ -415,14 +415,66 @@ class BottomUpMergeSort(MergeSort):
             k += 1
 
 
+class HeapSort(Sort):
+    description = """"""
+    steps = []
+    best_case = ""
+    average_case = ""
+    worst_case = ""
+
+    @staticmethod
+    def metadata():
+        return {
+            "description": HeapSort.description,
+            "steps": dict(list(enumerate(HeapSort.steps, start=1))),
+            "best_case": HeapSort.best_case,
+            "worst_case": HeapSort.worst_case,
+            "average_case": HeapSort.average_case
+        }
+
+    def execute(self):
+        """
+        Executes the heap sort algorithm on the provided collection.
+        :return: The sorted collection.
+        """
+
+        size = len(self.newcollection)
+
+        for i in range(size, -1, -1):
+            self.heapify(self.newcollection, size, i)
+
+        for i in range(size - 1, 0, -1):
+            self.newcollection[i], self.newcollection[0] = self.newcollection[0], self.newcollection[i]
+            self.heapify(self.newcollection, i, 0)
+
+    def heapify(self, collection, heap_size, root_index):
+        """
+        Creates a max-heap from the provided collection.
+        :param collection: The collection to transform into a max-heap.
+        :param heap_size: The size of the heap.
+        :param root_index: The root index of the subtree to be heapified.
+        :return: The generated max-heap.
+        """
+
+        largest = root_index
+
+        left  = 2 * root_index + 1
+        right = 2 * root_index + 2
+
+        if left < heap_size and collection[root_index] < collection[left]:
+            largest = left
+
+        if right < heap_size and collection[largest] < collection[right]:
+            largest = right
+
+        if largest != root_index:
+            collection[root_index], collection[largest] = collection[largest], collection[root_index]  # swap
+            self.heapify(collection, heap_size, largest)
+
 
 ############### ALGORITHMS TO DO ###############
 """
 class Sorts(object):
-    @staticmethod
-    def heapSort(self.newcollection):
-        return None
-
     @staticmethod
     def shellSort(self.newcollection):
         return None
