@@ -558,19 +558,49 @@ class CountingSort(Sort):
         self.newcollection = output
 
 
-
-############### ALGORITHMS TO DO ###############
-"""
-class Sorts(object):
-    @staticmethod
-    def countingSort(self.newcollection):
-        return None
-
-    @staticmethod
-    def bucketSort(self.newcollection):
-        return None
+class BucketSort(Sort):
+    description = """"""
+    steps = []
+    best_case = ""
+    average_case = ""
+    worst_case = ""
 
     @staticmethod
-    def radixSort(self.newcollection):
-        return None
-"""
+    def metadata():
+        return {
+            "description": BucketSort.description,
+            "steps": dict(list(enumerate(BucketSort.steps, start=1))),
+            "best_case": BucketSort.best_case,
+            "worst_case": BucketSort.worst_case,
+            "average_case": BucketSort.average_case
+        }
+
+    def execute(self):
+        """
+        Executes the bucket sort algorithm on the provided collection.
+        :return: The sorted collection.
+        """
+        buckets = list()
+        max_val = max(self.newcollection)
+        size = len(self.newcollection)
+        spread = max_val / size
+
+        current_min = 0
+        current_max = spread
+
+        while current_max < max_val:
+            bucket = list()
+
+            for item in self.newcollection.copy():
+                if item >= current_min and item <= current_max:
+                    bucket.append(item)
+                    self.newcollection.remove(item)
+
+            current_min = current_max + 1
+            current_max += spread
+
+            buckets.append(bucket)
+
+        for bucket in buckets:
+            bucket.sort() # can't be arsed to recurse over every bucket
+            self.newcollection += bucket
