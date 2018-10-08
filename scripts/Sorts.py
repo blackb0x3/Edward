@@ -511,6 +511,52 @@ class ShellSort(Sort):
                 # original element is now in its correct location
                 self.newcollection[j] = temp
             gap /= 2
+            
+            
+class CountingSort(Sort):
+    description = """"""
+    steps = []
+    best_case = ""
+    average_case = ""
+    worst_case = ""
+
+    @staticmethod
+    def metadata():
+        return {
+            "description": CountingSort.description,
+            "steps": dict(list(enumerate(CountingSort.steps, start=1))),
+            "best_case": CountingSort.best_case,
+            "worst_case": CountingSort.worst_case,
+            "average_case": CountingSort.average_case
+        }
+
+    def execute(self):
+        """
+        Executes the counting sort algorithm on the provided collection.
+        :return: The sorted collection.
+        """
+        size = len(self.newcollection)
+        output = [0] * size
+
+        k = max(self.newcollection)
+        count = [0] * k
+
+        for item in self.collection:
+            count[item] += 1
+
+        total = 0
+
+        for i in range(k):
+            old_count = count[i]
+            count[i] = total
+            total += old_count
+
+        for item in self.newcollection:
+            output[count[item]] = item
+            count[item] += 1
+
+        self.newcollection = output
+
 
 
 ############### ALGORITHMS TO DO ###############
