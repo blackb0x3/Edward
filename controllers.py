@@ -2,7 +2,7 @@ from flask_restful import Resource, abort, reqparse
 from flask import send_file
 
 from scripts.Sorts import *
-from scripts.Graph import Graph
+from scripts.Chart import Chart
 from config import ROOT_DIR
 
 sorts = {
@@ -128,7 +128,7 @@ class AlgorithmController(Resource):
                     algorithm_results_json.update({size: results_for_this_size_json})
 
                 if makegraph is True:
-                    algorithm_results_json['graph'] = Graph.new(algorithm_results)
+                    algorithm_results_json['graph'] = Chart.new(algorithm_results)
                 else:
                     algorithm_results_json['graph'] = None
 

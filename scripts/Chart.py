@@ -8,7 +8,7 @@ import random
 import string
 
 
-class Graph(object):
+class Chart(object):
 
     @staticmethod
     def new(algorithm_results: dict):
