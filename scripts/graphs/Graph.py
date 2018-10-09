@@ -130,3 +130,16 @@ class Graph:
 
         else:
             raise ValueError("You must provide an Edge, or components of an edge (source, destination and distance)")
+
+    def __eq__(self, other):
+        """
+        Overrides the default equality operator.
+        :param other: The other graph to compare.
+        :return: True if the two graphs are equal, False otherwise.
+        """
+
+        if isinstance(other, Graph):
+            return ()self.vertices == other.vertices and
+                self.edges == othjer.edges)
+
+        return False
