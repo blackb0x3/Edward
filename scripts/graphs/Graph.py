@@ -1,5 +1,7 @@
 from typing import List, Set
 
+import json
+
 
 class Node:
     """
@@ -35,6 +37,14 @@ class Node:
         to_return += "|_ _ _|" + os.linesep
 
         return to_return
+
+    def json(self):
+        """
+        Exports the Node object into a JSON serializable object.
+        :return: The serialized Node object in JSON format.
+        """
+
+        return json.dumps(self.__dict__)
 
 
 class Edge:
@@ -85,6 +95,14 @@ class Edge:
         to_return += "|_ _ _|       |_ _ _|" + os.linesep
 
         return to_return
+
+    def json(self):
+        """
+        Exports the Edge object into a JSON serializable object.
+        :return: The serialized Edge object in JSON format.
+        """
+
+        return json.dumps(self.__dict__)
 
 
 class Graph:
@@ -182,4 +200,12 @@ class Graph:
 
         for edge in self.edges:
             to_return += str(edge) + os.linesep
+
+    def json(self):
+        """
+        Exports the Graph object into a JSON serializable object.
+        :return: The serialized Graph in JSON format.
+        """
+
+        return json.dumps(self.__dict__)
 
