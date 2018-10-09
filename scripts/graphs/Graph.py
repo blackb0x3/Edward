@@ -24,6 +24,18 @@ class Node:
 
         return False
 
+    def __str__(self):
+        """
+        Overrides default implementation.
+        """
+
+        to_return = " _ _ _" + os.linesep
+        to_return += "|     |" + os.linesep
+        to_return += "|  " + self.label + "  |" + os.linesep
+        to_return += "|_ _ _|" + os.linesep
+
+        return to_return
+
 
 class Edge:
     """
@@ -61,6 +73,18 @@ class Edge:
                     self.directional == other.directional)
 
         return False
+
+    def __str__(self):
+        """
+        Overrides default implementation.
+        """
+
+        to_return = " _ _ _         _ _ _" + os.linesep
+        to_return += "|     |       |     |" + os.linesep
+        to_return += "|  " + self.source.label + "  | ==== " + self.distance + " ==== |  " + self.destination.label + "  |" + os.linesep
+        to_return += "|_ _ _|       |_ _ _|" + os.linesep
+
+        return to_return
 
 
 class Graph:
@@ -139,7 +163,23 @@ class Graph:
         """
 
         if isinstance(other, Graph):
-            return ()self.vertices == other.vertices and
-                self.edges == othjer.edges)
+            return (self.vertices == other.vertices and
+                self.edges == other.edges)
 
         return False
+
+    def __str__(self):
+        """
+        Overrides default implementation.
+        """
+
+        to_return = "VERTICES" + os.linesep + os.linesep
+
+        for vertex in self.vertices:
+            to_return += str(vertex) + os.linesep
+
+        to_return += "EDGES" + os.linesep + os.linesep
+
+        for edge in self.edges:
+            to_return += str(edge) + os.linesep
+
