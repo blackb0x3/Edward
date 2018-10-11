@@ -1,6 +1,6 @@
 from scripts.Algorithm import Algorithm
-from scripts.graphs.Graph import Edge, Graph, Node, GraphAlgorithm
 
+from datetime import datetime
 from itertools import permutations
 from typing import List, Set
 
@@ -262,3 +262,39 @@ class GraphAlgorithm(Algorithm):
         """
 
         return isinstance(self.oldcollection, Graph)
+
+    def __dict__(self):
+        """
+        Overrides the default implementation.
+        """
+
+        return {
+            "successful_execution": self.executed,
+            "input": self.oldcollection.json(),
+            "output": self.newcollection.__dict__,
+            "execution_start": self.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+            "execution_end": self.endtime.strftime("%Y-%m-%d %H:%M:%S"),
+            "execution_time": str(self.timetaken)
+        }
+
+    def has_worked(self):
+        """
+        Determines if the algorithm worked or not.
+        """
+
+        raise NotImplementedError("Please use a specific graph algorithm's has_worked() function.")
+
+    def execute(self):
+        """
+        Executes the graph algorithm's steps on the provided graph.
+        """
+
+        raise NotImplementedError("Please use a specific graph algorithm's execute() function.")
+
+    @staticmethod
+    def metadata():
+        """
+        Returns the algorithm's metadata - space complexity, time complexity, algorithm description etc.
+        """
+
+        raise NotImplementedError("Please use a specific graph algorithm's metadata() function.")
