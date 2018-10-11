@@ -1,7 +1,12 @@
+from scripts.Algorithm import Algorithm
+from scripts.graphs.Graph import Edge, Graph, Node, GraphAlgorithm
+
+from itertools import permutations
 from typing import List, Set
 
 import json
 import os
+import random
 
 
 class Node:
@@ -111,7 +116,7 @@ class Graph:
     Base class for the graph data structure.
     """
 
-    def __init__(self, vertices: set = set(), edges: list = list(), *args, **kwargs):
+    def __init__(self, vertices: set = set(), edges: set = set(), *args, **kwargs):
         """
         Graph constructor
         :param vertices: The set of points on the graph.
@@ -210,3 +215,50 @@ class Graph:
 
         return json.dumps(self.__dict__)
 
+
+class GraphAlgorithm(Algorithm):
+    """
+    Base class for algorithms involving graphs.
+    """
+
+    def generate_collection(self, *args, **kwargs):
+        """
+        Generates a graph for a cyclic detection algorithm.
+        :param args: Ordered list of args.
+        :param kwargs: Keyword args.
+        :return: The generated graph.
+        """
+
+        min_vertices = kwargs.get('min', 3)
+
+        if min_vertices < 3:
+            min_vertices = 3
+
+        max_vertices = kwargs.get('max', 26)
+
+        if max_vertices > 26:
+            max_vertices = 26
+
+        # alphabet in list form
+        possible_nodes = [p[0] for p in permutations("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1)]
+
+        nodes = set(kwargs.get('nodes', set()))
+
+        if len(nodes) < 1:
+            for i in range(26):
+                nodes.add(Node(label=possible_nodes.pop(random.randrange(26))))
+        else:
+            nodes = [Node(label=node) for node in nodes]
+
+        edges = set(kwargs.get('edges', set()))
+
+        self.oldcollection = Graph(vertices=nodes, edges=edges)
+
+    def collection_is_valid(self):
+        """
+        Determines if the collection is valid for this algorithm.
+        In this case, a Graph.
+        :return: True if the collection is a Graph, False otherwise.
+        """
+
+        return isinstance(self.oldcollection, Graph)
