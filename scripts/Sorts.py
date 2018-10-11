@@ -10,6 +10,13 @@ class Sort(Algorithm):
     """
 
     def generate_collection(self, *args, **kwargs):
+        """
+        Generates a list for a sorting algorithm.
+        :param args: Ordered list of args.
+        :param kwargs: Keyword args.
+        :return: The generated collection.
+        """
+
         min = kwargs.get('min', 1)
         max = kwargs.get('max', 1000)
         size = kwargs.get('size', 10)
@@ -39,7 +46,7 @@ class Sort(Algorithm):
         """
         Determines if the collection is valid for this algorithm.
         In this case, a list.
-        :return: 2-Tuple: 1: boolean which tells if the collection is a list, the name of the expected type.
+        :return: True if the collection is a list, False otherwise.
         """
 
         return isinstance(self.oldcollection, list)
