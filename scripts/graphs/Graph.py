@@ -1,7 +1,7 @@
-from scripts.Algorithm import Algorithm
+from scripts.Algorithm import Algorithm, AlgorithmError
 
 from datetime import datetime
-from itertools import permutations
+from itertools import permutations, combinations
 from typing import List, Set
 
 import json
@@ -251,26 +251,39 @@ class GraphAlgorithm(Algorithm):
         :return: The generated graph.
         """
 
-        min_vertices = kwargs.get('min', 3)
-
-        if min_vertices < 3:
-            min_vertices = 3
-
-        max_vertices = kwargs.get('max', 26)
-
-        if max_vertices > 26:
-            max_vertices = 26
-
-        # alphabet in list form
-        possible_nodes = [p[0] for p in permutations("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 1)]
-
         nodes = set(kwargs.get('nodes', set()))
 
-        if len(nodes) < 1:
-            for i in range(26):
-                nodes.add(Node(label=possible_nodes.pop(random.randrange(26))))
+        # generate nodes if none are provided
+        if len(nodes) == 0:
+            # pre-calculated permutations of picking alphabet characters - 27/10/2018
+            one_char_comb = 26
+            two_char_comb = 325
+            three_char_comb = 2600
+
+            node_count = kwargs.get('node_count', 5)
+            alpha_string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            possible_nodes = []
+
+            # no. of combinations of picking 1 character from the alpphabet
+            if node_count <= one_char_comb:
+                possible_nodes = ["".join(p) for p in combinations(alpha_string[:node_count], 1)]
+
+            # no. of combinations of picking 2 characters
+            elif node_count <= two_char_comb:
+                possible_nodes = ["".join(p) for p in combinations(alpha_string, 2)]
+
+            # no. of combinations of picking 3 characters
+            elif node_count <= three_char_comb:
+                possible_nodes = ["".join(p) for p in combinations(alpha_string, 3)]
+
+            else:
+                raise AlgorithmError(self, msg="Node count is too high, maximum number of node is 2600")
+
+            while node_count > 0:
+                nodes.add(Node(label=possible_nodes.pop(random.randrange(0, node_count))))
+                node_count -= 1
         else:
-            nodes = [Node(label=node) for node in nodes]
+            nodes = set([Node(label=node) for node in nodes])
 
         edges = set(kwargs.get('edges', set()))
 
