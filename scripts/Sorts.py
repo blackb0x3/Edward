@@ -26,7 +26,7 @@ class Sort(Algorithm):
         shuffles = 5
 
         # shuffle collection 5 times using fisher yates
-        for x in range(shuffles):
+        while shuffles > 0:
             s = size
 
             while (s > 0):
@@ -39,6 +39,8 @@ class Sort(Algorithm):
                 temp = coll[s]
                 coll[s] = coll[i]
                 coll[i] = temp
+
+            shuffles -= 1
 
         self.oldcollection = list(coll)
 
@@ -259,9 +261,6 @@ class IterativeQuickSort(QuickSort):
         size = len(self.newcollection)
         stack = Stack()
 
-        # initialize top of alt stack
-        top = -1
-
         # push initial values
         stack.push(0, size - 1)
 
@@ -405,7 +404,7 @@ class BottomUpMergeSort(MergeSort):
 
         while i < n1 and j < n2:
             if L[i] > R[j]:
-                self.newcolllection[k] = R[j]
+                self.newcollection[k] = R[j]
                 j += 1
             else:
                 self.newcollection[k] = L[i]
@@ -549,7 +548,7 @@ class CountingSort(Sort):
         k = max(self.newcollection)
         count = [0] * k
 
-        for item in self.collection:
+        for item in self.newcollection:
             count[item] += 1
 
         total = 0

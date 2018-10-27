@@ -1,4 +1,5 @@
 from scripts.Algorithm import Algorithm, AlgorithmError
+import numpy as np
 
 
 class LinearSearch(Algorithm):
@@ -28,7 +29,7 @@ class LinearSearch(Algorithm):
         shuffles = 5
 
         # shuffle collection 5 times using fisher yates
-        for x in range(shuffles):
+        while shuffles > 0:
             s = size
 
             while s > 0:
@@ -39,6 +40,8 @@ class LinearSearch(Algorithm):
                     i = 0
 
                 coll[s], coll[i] = coll[i], coll[s]
+
+            shuffles -= 1
 
         self.oldcollection = list(coll)
 
