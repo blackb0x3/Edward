@@ -9,6 +9,7 @@ matplotlib = "*"
 networkx = "*"
 Flask = "*"
 Flask-RESTful = "*"
+pylint = "*"
 
 [dev-packages]
 
