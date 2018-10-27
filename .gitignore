@@ -109,3 +109,6 @@ venv.bak/
 # Edward folders and files
 images/graphs/*
 !images/graphs/.gitkeep
+
+# .vscode
+.vscode/
