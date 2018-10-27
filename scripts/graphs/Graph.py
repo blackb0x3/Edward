@@ -19,7 +19,8 @@ class Node:
         Graph node constructor
         :param label: The name of the node.
         """
-        self.label = label  # type: str
+        self.label = label   # type: str
+        self.visited = False # type: bool
 
     def __eq__(self, other):
         """
@@ -190,6 +191,7 @@ class Graph:
             return (self.vertices == other.vertices and
                 self.edges == other.edges)
 
+
         return False
 
     def __str__(self):
@@ -215,11 +217,31 @@ class Graph:
 
         return json.dumps(self.__dict__)
 
+    def dict_edges(self):
+        """
+        Converts the list of edges into a dictionary.
+        Useful for algorithms which require the use of
+        a dictionary to iterate over visited nodes in the graph.
+        """
+
+        to_return = dict()
+
+        for edge in self.edges:
+            if edge.source.label not in to_return.keys():
+                to_return.update({edge.source.label: set()})
+            to_return[edge.source.label].add(edge.destination.label)
+
+        return to_return
+
 
 class GraphAlgorithm(Algorithm):
     """
     Base class for algorithms involving graphs.
     """
+
+    def __init__(self, *args, **kwargs):
+        self.output = list()
+        super().__init__(self, args, kwargs)
 
     def generate_collection(self, *args, **kwargs):
         """
@@ -271,7 +293,7 @@ class GraphAlgorithm(Algorithm):
         return {
             "successful_execution": self.executed,
             "input": self.oldcollection.json(),
-            "output": self.newcollection.__dict__,
+            "output": self.output.__dict__,
             "execution_start": self.starttime.strftime("%Y-%m-%d %H:%M:%S"),
             "execution_end": self.endtime.strftime("%Y-%m-%d %H:%M:%S"),
             "execution_time": str(self.timetaken)

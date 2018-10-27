@@ -10,25 +10,6 @@ class DetectCycleAlgorithm(GraphAlgorithm):
     Class of algorithms which detect if there is at least one cycle in the provided graph.
     """
 
-    def run(self):
-        """
-        Performs algorithm's pre-execution and post-execution steps.
-        Overrides the default implementation by storing detected cycles in self.newcollection.
-        """
-
-        try:
-            if self.executed is False:
-                self.newcollection = set()
-                self.starttime = datetime.now()
-                self.execute()
-                self.executed = self.has_worked()
-                self.endtime = datetime.now()
-                self.timetaken = self.endtime - self.starttime
-        except AlgorithmError as err:
-            print("Algorithm runtime error: ", err)
-        except RuntimeError as run_err:
-            print("Error: ", run_err)
-
     def has_worked(self):
         """
         Determines if the algorithm correctly detected cycles in the graph, as intended.
@@ -41,7 +22,8 @@ class DetectCycleAlgorithm(GraphAlgorithm):
         for edge in self.oldcollection.edges:
             g.add_edge(edge.source.label, edge.destination.label, weight=edge.distance)
 
-        if len(list(nx.simple_cycles(g))) != len(self.newcollection):
+        # list of cycles not stored in self.newcollection
+        if len(list(nx.simple_cycles(g))) != len(self.output):
             raise AlgorithmError("Incorrect number of cycles detected.")
 
         return True
@@ -60,3 +42,33 @@ class DetectCycleAlgorithm(GraphAlgorithm):
         """
 
         raise NotImplementedError("Please use a specific graph algorithm's metadata() function.")
+
+
+class Kosaraju(DetectCycleAlgorithm):
+    """
+    Algorithm class for the Kosaraju algorithm - a DFS algorithm for detecting simple cycles in graphs.
+    """
+
+    description = """"""
+    steps = []
+    best_case = ""
+    average_case = ""
+    worst_case = ""
+
+    @staticmethod
+    def metadata():
+        return {
+            "description": Kosaraju.description,
+            "steps": Kosaraju.steps,
+            "best_case": Kosaraju.best_case,
+            "worst_case": Kosaraju.worst_case,
+            "average_case": Kosaraju.average_case
+        }
+
+    # TODO
+    def execute(self):
+        """
+        Finds all the cycles in the provided graph using Kosaraju's algorithm.
+        :return: List of tuples containing labels of visited nodes which can be cycled.
+        """
+
