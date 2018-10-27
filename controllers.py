@@ -1,5 +1,6 @@
 from flask_restful import Resource, abort, reqparse
 from flask import send_file
+import os
 
 from scripts.Sorts import *
 from scripts.Chart import Chart
@@ -59,7 +60,7 @@ class AlgorithmController(Resource):
 
         try:
             return algorithmmap[algorithmname].metadata(), 200
-        except NotImplementedError as err:
+        except NotImplementedError:
             abort(501, message="There is no metadata available for the {} algorithm.".format(algorithmname))
 
     def post(self, algorithmname):
@@ -82,7 +83,7 @@ class AlgorithmController(Resource):
             abort(400, message="No action specified.")
         else:
             if action not in AlgorithmController.valid_actions:
-                abort(400, "Invalid action '{}'".format(action))
+                abort(400, message="Invalid action '{}'".format(action))
 
             default_options = {
                 'min_size': 5,
@@ -119,10 +120,11 @@ class AlgorithmController(Resource):
                     results_for_this_size = []
                     results_for_this_size_json = []
 
-                    for i in range(repeats):
+                    while repeats > 0:
                         algorithm = self.run_algorithm(algorithm=algorithmmap[algorithmname](size=size))
                         results_for_this_size.append(algorithm)
                         results_for_this_size_json.append(algorithm.__dict__())
+                        repeats -= 1
 
                     algorithm_results.update({size: results_for_this_size})
                     algorithm_results_json.update({size: results_for_this_size_json})
