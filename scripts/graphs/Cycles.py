@@ -71,4 +71,4 @@ class Kosaraju(DetectCycleAlgorithm):
         Finds all the cycles in the provided graph using Kosaraju's algorithm.
         :return: List of tuples containing labels of visited nodes which can be cycled.
         """
-
+        pass
