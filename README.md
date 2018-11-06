@@ -60,3 +60,6 @@ How many times should the **test** be repeated? Default is 5 repeats.
 
 ##### collection
 Allows you to provide your own dataset, rather than allow Edward to generate it's own via the **run** or **test** commands.
+
+## Pull Requests
+Feel free to clone the repo, make a branch, and submit your own algorithms as pull requests. I've started working on different algorithms but not implemented all of them!
