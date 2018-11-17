@@ -34,32 +34,51 @@ class TestChart(object):
 
 class CompareChart(object):
     @staticmethod
-    def new(two_results: dict):
-        first_algorithm_set = two_results["first_algorithm"]["result"]
-        second_algorithm_set = two_results["second_algorithm"]["result"]
+    def new(results: dict, original_algorithm: str, other_algorithms: set):
+        original_algorithm_name = algorithm_names[original_algorithm]
 
-        first_algorithm_name = algorithm_names[two_results["first_algorithm"]["name"]]
-        second_algorithm_name = algorithm_names[two_results["second_algorithm"]["name"]]
+        original_algorithm_result_set = results["original_algorithm"]["result"]
+        other_algorithm_result_sets = results["other_algorithms"]
 
-        names = (first_algorithm_name, second_algorithm_name)
+        times = dict()
 
-        first_average_execution_time = np.average([
-            result.timetaken.total_seconds() for result in first_algorithm_set
+        times[original_algorithm_name] = np.average([
+            result.timetaken.total_seconds() for result in original_algorithm_result_set
         ])
         
-        second_average_execution_time = np.average([
-            result.timetaken.total_seconds() for result in second_algorithm_set
-        ])
+        for k, res in other_algorithm_result_sets.items():
+            times[algorithm_names[k]] = np.average([
+                res.timetaken.total_seconds()
+            ])
 
-        times = (first_average_execution_time, second_average_execution_time)
+        barplot = plt.bar(range(len(times)), list(times.values()), align="center", color=(0.5, 0.5, 0.5, 1))
+        plt.xticks(range(len(times)), list(times.keys()))
 
-        alg_ticks = np.arange(len(names))
+        i = 1
 
-        plt.bar(alg_ticks, times, align="center")
-        plt.xticks(alg_ticks, names)
+        baseline = times[original_algorithm_name]
+        vs = list(times.values())
+
+        while i < len(barplot):
+            curr_time = vs[i]
+
+            if curr_time <= baseline / 2:
+                barplot[i].set_color('b')
+
+            elif curr_time <= baseline:
+                barplot[i].set_color('g')
+
+            elif curr_time >= baseline * 1.5:
+                barplot[i].set_color('r')
+
+            elif curr_time >= baseline:
+                barplot[i].set_color('y')
+
+            i += 1
+
         plt.xlabel("Algorithm")
         plt.ylabel("Average Execution Time (seconds)")
-        plt.title("Comparison of {0} and {1}".format(names[0], names[1]))
+        plt.title("Comparing {0} against similar algorithms".format(original_algorithm_name))
 
         filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(30))
         filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)

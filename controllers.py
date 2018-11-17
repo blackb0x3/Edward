@@ -141,80 +141,95 @@ class AlgorithmController(Resource):
                 return algorithm_results_json, 200
 
             if action == "compare":
-                # check if two algorithm's solve the same problem
-                first_algorithm_class = algorithmmap[args['first_algorithm']]
-                second_algorithm_class = algorithmmap[args['second_algorithm']]
-                try:
-                    repeats = args['options']['repeats']
-                except:
-                    repeats = 10
+                original_algorithm_class = algorithmmap[algorithmname]
+                other_algorithm_classes = {k: algorithmmap[k] for k in set(args["other_algorithms"])}
 
-                if first_algorithm_class.__base__ is not second_algorithm_class.__base__:
-                    abort(400, message="The two algorithms do not solve the same computational problem!")
+                # check if all algorithms solve the same problem
+                same_algorithms = all([original_algorithm_class.__base__ is classdef.__base__ for classdef in other_algorithm_classes])
+
+                if same_algorithms is not True:
+                    abort(400, message="The algorithms being compared do not solve the same computational problem.")
+
+                other_results = dict()
+                other_results_json = dict()
+
+                for name in args["other_algorithms"]:
+                    other_results.update({ name: dict() })
+                    other_results_json.update({ name: dict() })
+
+                # global
+                collection_to_use = None
+
+                collection_types = [
+                    list(),
+                    tuple(),
+                    dict()
+                ]
+
+                if args['collection'] is None or args['collection'] in collection_types:
+                    min_size = options['min_size'] # TODO must be at least 5
+                    max_size = options['max_size'] # TODO must be at least 10
+
+                    size_to_use = random.randint(min_size, max_size)
+
+                    original_algorithm = original_algorithm_class(size=size_to_use)
+
+                    # get generated collection from first algorithm
+                    # avoids second algorithm generating another one
+                    # keeps experiment fair
+                    collection_to_use = original_algorithm.oldcollection
                 else:
-                    if args['collection'] is None or args['collection'] == []:
-                        min_size = options['min_size'] # TODO must be at least 5
-                        max_size = options['max_size'] # TODO must be at least 10
+                    collection_to_use = args["collection"]
 
-                        size_to_use = random.randint(min_size, max_size)
+                original_results = list()
+                original_results_json = list()
 
-                        first_algorithm = first_algorithm_class(size=size_to_use)
+                other_results = dict()
+                other_results_json = dict()
 
-                        # get generated collection from first algorithm
-                        # avoids second algorithm generating another one
-                        # keeps experiment fair
-                        collection_to_use = first_algorithm.oldcollection
-                    else:
-                        collection_to_use = args["collection"]
+                while repeats > 0:
+                    original_algorithm = original_algorithm_class(data=collection_to_use)
+                    other_algorithms = [(name, classdef(data=collection_to_use)) for name, classdef in other_algorithm_classes.items()]
 
-                    first_results = []
-                    first_results_json = []
-                    second_results = []
-                    second_results_json = []
+                    original_algorithm.run()
+                    original_results.append(original_algorithm)
+                    original_results_json.append(original_algorithm.__dict__())
 
-                    while repeats > 0:
-                        first_algorithm = first_algorithm_class(data=collection_to_use)
-                        second_algorithm = second_algorithm_class(data=collection_to_use)
+                    for name, algorithm in other_algorithms:
+                        if name not in other_results.keys():
+                            other_results[name] = list()
 
-                        first_algorithm.run()
-                        second_algorithm.run()
+                        if name not in other_results_json.keys():
+                            other_results_json[name] = list()
+                        
+                        algorithm.run()
+                        other_results[name].append(algorithm)
+                        other_results_json[name].append(algorithm.__dict__())
 
-                        first_results.append(first_algorithm)
-                        second_results.append(second_algorithm)
+                    repeats -= 1
 
-                        first_results_json.append(first_algorithm.__dict__())
-                        second_results_json.append(second_algorithm.__dict__())
+                results = {
+                    "original_algorithm": {
+                        "name": algorithmname,
+                        "result": original_results
+                    },
+                    "other_algorithms": other_results
+                }
 
-                        repeats -= 1
+                results_json = {
+                    "original_algorithm": {
+                        "name": algorithmname,
+                        "result": original_results_json
+                    },
+                    "other_algorithms": { name: other_results_json[name] for name in other_algorithm_classes.keys()}
+                }
 
-                    results = {
-                        "first_algorithm": {
-                            "name": args["first_algorithm"],
-                            "result": first_results
-                        },
-                        "second_algorithm": {
-                            "name": args["second_algorithm"],
-                            "result": second_results
-                        }
-                    }
+                if makegraph is True:
+                    results_json['graph'] = CompareChart.new(results, set([algorithmname] + args["other_algorithms"]))
+                else:
+                    results_json['graph'] = None
 
-                    results_json = {
-                        "first_algorithm": {
-                            "name": args["first_algorithm"],
-                            "result": first_results_json
-                        },
-                        "second_algorithm": {
-                            "name": args["second_algorithm"],
-                            "result": second_results_json
-                        }
-                    }
-
-                    if makegraph is True:
-                        results_json['graph'] = CompareChart.new(results)
-                    else:
-                        results_json['graph'] = None
-
-                    return results_json, 200
+                return results_json, 200
 
 
 class GraphController(Resource):
