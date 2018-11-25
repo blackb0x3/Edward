@@ -8,7 +8,22 @@ import matplotlib.pyplot as plt
 import random
 import string
 
-class TestChart(object):
+
+class Chart(object):
+    @staticmethod
+    def new(data: dict):
+        raise NotImplementedError("Please use a more specific chart: TestChart or CompareChart")
+
+    @staticmethod
+    def save():
+        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(30))
+        filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)
+        plt.savefig(filepath + '.png', bbox_inches='tight')
+
+        return filename
+
+
+class TestChart(Chart):
     @staticmethod
     def new(algorithm_results: dict):
         execution_times = {}
@@ -24,12 +39,8 @@ class TestChart(object):
         plt.ylabel("Average Execution Time (seconds)")
         plt.xscale('linear')
         plt.yscale('linear')
-
-        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(30))
-        filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)
-        plt.savefig(filepath + ".png", bbox_inches='tight')
-
-        return filename
+        
+        return Chart.save()
 
 
 class CompareChart(object):
@@ -61,8 +72,4 @@ class CompareChart(object):
         plt.ylabel("Average Execution Time (seconds)")
         plt.title("Comparison of {0} and {1}".format(names[0], names[1]))
 
-        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(30))
-        filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)
-        plt.savefig(filepath + ".png", bbox_inches='tight')
-
-        return filename
+        return Chart.save()
