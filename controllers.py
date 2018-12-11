@@ -201,7 +201,7 @@ class AlgorithmController(Resource):
         try:
             return algorithmmap[algorithmname].metadata(), 200
         except NotImplementedError:
-            abort(501, message="There is no metadata available for the {} algorithm.".format(algorithmname))
+            abort(501, message="There is no metadata available for the {0} algorithm.".format(algorithmname))
 
     def post(self, algorithmname):
         """
@@ -209,6 +209,11 @@ class AlgorithmController(Resource):
         """
 
         self.check_algorithm_exists(algorithmname)
+
+        try:
+            algorithmmap[algorithmname].metadata()
+        except NotImplementedError:
+            abort(501, message="The {0} algorithm has not been implemented yet.".format(algorithmname))
 
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("action", type=str, required=True)
