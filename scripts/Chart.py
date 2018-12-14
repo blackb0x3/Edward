@@ -39,11 +39,11 @@ class TestChart(Chart):
         plt.ylabel("Average Execution Time (seconds)")
         plt.xscale('linear')
         plt.yscale('linear')
-        
+
         return Chart.save()
 
 
-class CompareChart(object):
+class CompareChart(Chart):
     @staticmethod
     def new(results: dict, original_algorithm: str, other_algorithms: set):
         original_algorithm_name = algorithm_names[original_algorithm]
@@ -56,7 +56,7 @@ class CompareChart(object):
         times[original_algorithm_name] = np.average([
             result.timetaken.total_seconds() for result in original_algorithm_result_set
         ])
-        
+
         for k, res in other_algorithm_result_sets.items():
             times[algorithm_names[k]] = np.average([
                 res.timetaken.total_seconds()
