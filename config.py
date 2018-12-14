@@ -16,3 +16,6 @@ algorithm_names = {
     "counting-sort":           "Counting Sort",
     "bucket-sort":             "Bucket Sort",
 }
+
+DEFAULT_MIN_COLLECTION_SIZE = 5
+DEFAULT_MAX_COLLECTION_SIZE = 10

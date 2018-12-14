@@ -6,7 +6,7 @@ from typing import Dict
 
 from scripts.Sorts import *
 from scripts.Chart import CompareChart, TestChart
-from config import ROOT_DIR
+from config import ROOT_DIR, DEFAULT_MIN_COLLECTION_SIZE, DEFAULT_MAX_COLLECTION_SIZE
 
 sorts = {
     "insertion-sort":          InsertionSort,
@@ -46,6 +46,151 @@ class AlgorithmController(Resource):
 
         return True
 
+    def _run(self, algname, coll):
+        algorithm = algorithmmap[algname](coll)
+        algorithm.run()
+        return algorithm.__dict__(), 200
+
+    def _test(self, algname, options):
+        min_size = options['min_size'] # TODO must be at least 5
+        max_size = options['max_size'] # TODO must be at least 10
+        jump     = options['jump'] # TODO must be at least 1
+        #repeats = options['repeats'] # TODO must be at least 3
+
+        algorithm_results = {}
+        algorithm_results_json = {}
+
+        for size in range(min_size, max_size + 1, jump):
+            results_for_this_size = []
+            results_for_this_size_json = []
+
+            repeats = options['repeats'] # TODO must be at least 3
+
+            while repeats > 0:
+                # get algorithm class from map, instantiate and run
+                algorithm = algorithmmap[algname](size=size)
+                algorithm.run()
+
+                results_for_this_size.append(algorithm)
+                results_for_this_size_json.append(algorithm.__dict__())
+                repeats -= 1
+
+            algorithm_results.update({size: results_for_this_size})
+            algorithm_results_json.update({size: results_for_this_size_json})
+
+
+
+        if options['makegraph'] is True:
+            algorithm_results_json['graph'] = TestChart.new(algorithm_results)
+        else:
+            algorithm_results_json['graph'] = None
+
+        return algorithm_results_json, 200
+
+    def _compare(self, algname, other_algs, **kwargs):
+        original_algorithm_class = algorithmmap[algname]
+        other_algorithm_classes = {k: algorithmmap[k] for k in set(other_algs)}
+
+        # check if all algorithms solve the same computational problem
+        # compare action will not work otherwise
+        same_algorithms = all([original_algorithm_class.__base__ is classdef.__base__ for classdef in other_algorithm_classes])
+
+        if same_algorithms is not True:
+            abort(400, message="The algorithms being compared do not solve the same computational problem.")
+
+        other_results = dict()
+        other_results_json = dict()
+
+        for name in args["other_algorithms"]:
+            other_results.update({ name: dict() })
+            other_results_json.update({ name: dict() })
+
+        # global var
+        collection_to_use = kwargs.get("coll", None)
+
+        empty_collection_types = [
+            list(),
+            tuple(),
+            dict()
+        ]
+
+        if collection_to_use is None or collection_to_use in empty_collection_types:
+            # must be at least 5
+            # no specific reason
+            min_size = options.get()'min_size', DEFAULT_MIN_COLLECTION_SIZE)
+
+            if min_size < DEFAULT_MIN_COLLECTION_SIZE:
+                min_size = DEFAULT_MIN_COLLECTION_SIZE
+
+            max_size = options.get('max_size', DEFAULT_MAX_COLLECTION_SIZE)
+
+            if max_size < DEFAULT_MAX_COLLECTION_SIZE:
+                max_size = DEFAULT_MAX_COLLECTION_SIZE
+
+            if max_size <= min_size:
+                abort(400, message="The max size ({0}) is less than the min size ({1})".format(max_size, min_size))
+
+            size_to_use = random.randint(min_size, max_size)
+
+            original_algorithm = original_algorithm_class(size=size_to_use)
+
+            # get generated collection from first algorithm
+            # avoids second algorithm generating another one
+            # keeps experiment fair
+            collection_to_use = original_algorithm.oldcollection
+
+        original_results = list()
+        original_results_json = list()
+
+        other_results = dict()
+        other_results_json = dict()
+
+        repeats = options.get("repeats", 5)
+
+        while repeats > 0:
+            original_algorithm = original_algorithm_class(data=collection_to_use)
+            other_algorithms = [(name, classdef(data=collection_to_use)) for name, classdef in other_algorithm_classes.items()]
+
+            original_algorithm.run()
+            original_results.append(original_algorithm)
+            original_results_json.append(original_algorithm.__dict__())
+
+            for name, algorithm in other_algorithms:
+                if name not in other_results.keys():
+                    other_results[name] = list()
+
+                if name not in other_results_json.keys():
+                    other_results_json[name] = list()
+
+                algorithm.run()
+                other_results[name].append(algorithm)
+                other_results_json[name].append(algorithm.__dict__())
+
+            repeats -= 1
+
+        results = {
+            "original_algorithm": {
+                "name": algorithmname,
+                "result": original_results
+            },
+            "other_algorithms": other_results
+        }
+
+        results_json = {
+            "original_algorithm": {
+                "name": algorithmname,
+                "result": original_results_json
+            },
+            "other_algorithms": { name: other_results_json[name] for name in other_algorithm_classes.keys()}
+        }
+
+        if options['makegraph'] is True:
+            results_json['graph'] = CompareChart.new(results, set([algorithmname] + args["other_algorithms"]))
+        else:
+            results_json['graph'] = None
+
+        return results_json, 200
+
     def get(self, algorithmname):
         """
         Algorithm metadata - space complexity, time complexity, description etc.
@@ -56,7 +201,7 @@ class AlgorithmController(Resource):
         try:
             return algorithmmap[algorithmname].metadata(), 200
         except NotImplementedError:
-            abort(501, message="There is no metadata available for the {} algorithm.".format(algorithmname))
+            abort(501, message="There is no metadata available for the {0} algorithm.".format(algorithmname))
 
     def post(self, algorithmname):
         """
@@ -64,6 +209,11 @@ class AlgorithmController(Resource):
         """
 
         self.check_algorithm_exists(algorithmname)
+
+        try:
+            algorithmmap[algorithmname].metadata()
+        except NotImplementedError:
+            abort(501, message="The {0} algorithm has not been implemented yet.".format(algorithmname))
 
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("action", type=str, required=True)
@@ -97,124 +247,17 @@ class AlgorithmController(Resource):
             options = default_options if options_not_provided else {**default_options, **args['options']}
 
             # don't make graph unless specified otherwise
-            makegraph = False if args['makegraph'] is None else args['makegraph']
+            options['makegraph'] = False if args['makegraph'] is None else args['makegraph']
 
             if action == "run":
-                algorithm = algorithmmap[algorithmname](args['collection'])
-                algorithm.run()
-                return algorithm.__dict__(), 200
+                return self._run(algname=algorithmname, coll=args['collection'])
 
             if action == "test":
-                # Uncomment during controller debugging
                 #abort(503, message="The {} action is not available.".format(action))
-                min_size = options['min_size'] # TODO must be at least 5
-                max_size = options['max_size'] # TODO must be at least 10
-                jump     = options['jump'] # TODO must be at least 1
-                #repeats = options['repeats'] # TODO must be at least 3
-
-                algorithm_results = {}
-                algorithm_results_json = {}
-
-                for size in range(min_size, max_size + 1, jump):
-                    results_for_this_size = []
-                    results_for_this_size_json = []
-
-                    repeats = options['repeats'] # TODO must be at least 3
-
-                    while repeats > 0:
-                        # get algorithm class from map, instantiate and run
-                        algorithm = algorithmmap[algorithmname](size=size)
-                        algorithm.run()
-
-                        results_for_this_size.append(algorithm)
-                        results_for_this_size_json.append(algorithm.__dict__())
-                        repeats -= 1
-
-                    algorithm_results.update({size: results_for_this_size})
-                    algorithm_results_json.update({size: results_for_this_size_json})
-
-                if makegraph is True:
-                    algorithm_results_json['graph'] = TestChart.new(algorithm_results)
-                else:
-                    algorithm_results_json['graph'] = None
-
-                return algorithm_results_json, 200
+                return self._test(algname=algorithmname, options=options)
 
             if action == "compare":
-                # check if two algorithm's solve the same problem
-                first_algorithm_class = algorithmmap[args['first_algorithm']]
-                second_algorithm_class = algorithmmap[args['second_algorithm']]
-                try:
-                    repeats = args['options']['repeats']
-                except:
-                    repeats = 10
-
-                if first_algorithm_class.__base__ is not second_algorithm_class.__base__:
-                    abort(400, message="The two algorithms do not solve the same computational problem!")
-                else:
-                    if args['collection'] is None or args['collection'] == []:
-                        min_size = options['min_size'] # TODO must be at least 5
-                        max_size = options['max_size'] # TODO must be at least 10
-
-                        size_to_use = random.randint(min_size, max_size)
-
-                        first_algorithm = first_algorithm_class(size=size_to_use)
-
-                        # get generated collection from first algorithm
-                        # avoids second algorithm generating another one
-                        # keeps experiment fair
-                        collection_to_use = first_algorithm.oldcollection
-                    else:
-                        collection_to_use = args["collection"]
-
-                    first_results = []
-                    first_results_json = []
-                    second_results = []
-                    second_results_json = []
-
-                    while repeats > 0:
-                        first_algorithm = first_algorithm_class(data=collection_to_use)
-                        second_algorithm = second_algorithm_class(data=collection_to_use)
-
-                        first_algorithm.run()
-                        second_algorithm.run()
-
-                        first_results.append(first_algorithm)
-                        second_results.append(second_algorithm)
-
-                        first_results_json.append(first_algorithm.__dict__())
-                        second_results_json.append(second_algorithm.__dict__())
-
-                        repeats -= 1
-
-                    results = {
-                        "first_algorithm": {
-                            "name": args["first_algorithm"],
-                            "result": first_results
-                        },
-                        "second_algorithm": {
-                            "name": args["second_algorithm"],
-                            "result": second_results
-                        }
-                    }
-
-                    results_json = {
-                        "first_algorithm": {
-                            "name": args["first_algorithm"],
-                            "result": first_results_json
-                        },
-                        "second_algorithm": {
-                            "name": args["second_algorithm"],
-                            "result": second_results_json
-                        }
-                    }
-
-                    if makegraph is True:
-                        results_json['graph'] = CompareChart.new(results)
-                    else:
-                        results_json['graph'] = None
-
-                    return results_json, 200
+                return self._compare(algname=algorithmname, other_algs=args['other_algorithms'], coll=args['collection'], options=options)
 
 
 class GraphController(Resource):
