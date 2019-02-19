@@ -45,4 +45,5 @@ class Knapsack:
             raise ValueError("You must supply either a pointer or a cost and value.")
 
     def update_item(self, pointer, cost, value):
-        return self.items[pointer] = KnapsackItem(cost, value)
+        self.items[pointer] = KnapsackItem(cost, value)
+        return True
