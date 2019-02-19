@@ -1,4 +1,4 @@
-from models.Knapsack import Knapsack, KnapsackItem
+from models.Knapsack import KnapsackCollection, KnapsackItem
 from scripts.Algorithm import Algorithm, AlgorithmError
 
 import random
@@ -30,10 +30,10 @@ class KnapsackAlgorithm(Algorithm):
 
     		i -= 1
 
-    	return Knapsack(items)
+    	return KnapsackCollection(items)
 
     def _parse_knapsack(knapsack_obj):
-    	return Knapsack()
+    	return KnapsackCollection()
 
     def generate_collection(self, *args, **kwargs):
     	"""
@@ -73,7 +73,7 @@ class KnapsackAlgorithm(Algorithm):
 		:return: True if the collection is a SORTED knapsack, False otherwise.
 		"""
 
-		return isinstance(self.oldcollection, Knapsack) and self.oldcollection.is_sorted()
+		return isinstance(self.oldcollection, KnapsackCollection)
 
 	def has_worked(self):
 		"""
@@ -98,3 +98,14 @@ class KnapsackAlgorithm(Algorithm):
 		"""
 
 		raise NotImplementedError("Please use a specific knapsack algorithm's metadata() function.")
+
+
+class DPZeroOneKnapsackAlgorithm(KnapsackAlgorithm):
+	"""
+	Class which models DP implementation of solving the knapsack problem.
+
+	:return: The list of knapsack items which yield the highest value given the cost constraint.
+	"""
+
+	pass
+
