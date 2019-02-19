@@ -8,7 +8,22 @@ import matplotlib.pyplot as plt
 import random
 import string
 
-class TestChart(object):
+
+class Chart(object):
+    @staticmethod
+    def new(data: dict):
+        raise NotImplementedError("Please use a more specific chart: TestChart or CompareChart")
+
+    @staticmethod
+    def save():
+        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for i in range(30))
+        filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)
+        plt.savefig(filepath + '.png', bbox_inches='tight')
+
+        return filename
+
+
+class TestChart(Chart):
     @staticmethod
     def new(algorithm_results: dict):
         execution_times = {}
@@ -25,14 +40,10 @@ class TestChart(object):
         plt.xscale('linear')
         plt.yscale('linear')
 
-        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(30))
-        filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)
-        plt.savefig(filepath + ".png", bbox_inches='tight')
-
-        return filename
+        return Chart.save()
 
 
-class CompareChart(object):
+class CompareChart(Chart):
     @staticmethod
     def new(results: dict, original_algorithm: str, other_algorithms: set):
         original_algorithm_name = algorithm_names[original_algorithm]
@@ -45,7 +56,7 @@ class CompareChart(object):
         times[original_algorithm_name] = np.average([
             result.timetaken.total_seconds() for result in original_algorithm_result_set
         ])
-        
+
         for k, res in other_algorithm_result_sets.items():
             times[algorithm_names[k]] = np.average([
                 res.timetaken.total_seconds()
@@ -80,8 +91,4 @@ class CompareChart(object):
         plt.ylabel("Average Execution Time (seconds)")
         plt.title("Comparing {0} against similar algorithms".format(original_algorithm_name))
 
-        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(30))
-        filepath = os.path.join(ROOT_DIR, 'images/graphs/', filename)
-        plt.savefig(filepath + ".png", bbox_inches='tight')
-
-        return filename
+        return Chart.save()
