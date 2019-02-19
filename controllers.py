@@ -4,23 +4,23 @@ import os
 import random
 from typing import Dict
 
-from scripts.Sorts import *
+from scripts import Sorts
 from scripts.Chart import CompareChart, TestChart
 from config import ROOT_DIR, DEFAULT_MIN_COLLECTION_SIZE, DEFAULT_MAX_COLLECTION_SIZE
 
 sorts = {
-    "insertion-sort":          InsertionSort,
-    "selection-sort":          SelectionSort,
-    "optimised-bubble-sort":   OptimisedBubbleSort,
-    "traditional-bubble-sort": TraditionalBubbleSort,
-    "recursive-quick-sort":    RecursiveQuickSort,
-    "iterative-quick-sort":    IterativeQuickSort,
-    "top-down-merge-sort":     TopDownMergeSort,
-    "bottom-up-merge-sort":    BottomUpMergeSort,
-    "heap-sort":               HeapSort,
-    "shell-sort":              ShellSort,
-    "counting-sort":           CountingSort,
-    "bucket-sort":             BucketSort
+    "insertion-sort":          Sorts.InsertionSort,
+    "selection-sort":          Sorts.SelectionSort,
+    "optimised-bubble-sort":   Sorts.OptimisedBubbleSort,
+    "traditional-bubble-sort": Sorts.TraditionalBubbleSort,
+    "recursive-quick-sort":    Sorts.RecursiveQuickSort,
+    "iterative-quick-sort":    Sorts.IterativeQuickSort,
+    "top-down-merge-sort":     Sorts.TopDownMergeSort,
+    "bottom-up-merge-sort":    Sorts.BottomUpMergeSort,
+    "heap-sort":               Sorts.HeapSort,
+    "shell-sort":              Sorts.ShellSort,
+    "counting-sort":           Sorts.CountingSort,
+    "bucket-sort":             Sorts.BucketSort
 }
 
 algorithmmap = {**sorts} # type: Dict[str, Algorithm]
