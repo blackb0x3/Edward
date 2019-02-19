@@ -1,6 +1,10 @@
 from typing import List
 
 class KnapsackItem:
+    """
+    Class which models an item contained in a Knapsack or KnapsackCollection. 
+    """
+
     def __init__(self, cost: float, value: float):
         self.cost = cost
         self.value = value
@@ -9,7 +13,11 @@ class KnapsackItem:
         return self.cost == other.cost and self.value == other.value
 
 
-class Knapsack:
+class KnapsackCollection:
+    """
+    Class which models a list of all possible items to be added to a knapsack.
+    """
+
     def __init__(self, items: List[KnapsackItem] = []):
         self.items = items
 
@@ -80,7 +88,7 @@ class Knapsack:
             self.items[pointer] = KnapsackItem(cost, value)
             self.items.sort(key=lambda x: (x.cost, x.value))
             return True
-            
+
         except TypeError e:
             return False
 
@@ -102,5 +110,54 @@ class Knapsack:
                 return False
 
             current_ksi = new_ksi
+
+        return True
+
+
+class Knapsack:
+    """
+    Class which models a knapsack.
+    """
+
+    def __init__(self, max_cost):
+        self.max_cost = max_cost
+        self.items = []
+        self.current_cost = 0
+        self.current_value = 0
+
+    def _update(self):
+        self.current_cost = sum(list(map(lambda x: x.cost, self.items)))
+        self.current_value = sum(list(map(lambda x: x.value, self.items)))
+
+    def add_item(self, item: KnapsackItem):
+        if self.current_cost + item.cost > self.max_cost:
+            return False
+        else:
+            self.items.append(item)
+            self._update()
+            return True
+
+    def remove_item(self, cost, value):
+        for ksi in self.items[:]:
+            if ksi.cost == cost and ksi.value == value:
+                self.items.remove(ksi)
+                self._update()
+                return True
+
+        return False
+
+    def replace_item(self, old, new):
+        ksi_to_be_replaced = next((x for x in self.items if x.cost == old.cost and x.value == old.value), None)
+
+        if ksi_to_be_replaced is None:
+            return False
+
+        # works for both positive negative differences in cost
+        if self.current_cost + (old.cost - new.cost) > self.max_cost:
+            return False
+
+        self.items.remove(ksi_to_be_replaced)
+        self.items.append(new)
+        self._update()
 
         return True
