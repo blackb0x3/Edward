@@ -6,7 +6,7 @@ import numpy as np
 
 class Sort(Algorithm):
     """
-    Base class for sorting algorithms.
+    Base class for algorithms which sort 1-dimensional lists.
     """
 
     def generate_collection(self, *args, **kwargs):
@@ -60,12 +60,12 @@ class Sort(Algorithm):
         :return: True if the collection was sorted correctly.
         """
 
-        if self.is_sorted() is False:
+        if self._is_sorted() is False:
             raise AlgorithmError("The algorithm did not sort the collection correctly.")
 
         return True
 
-    def is_sorted(self, desc=False):
+    def _is_sorted(self, desc=False):
         """
         Determines if a collection has been sorted. Default is ascending order.
         :param desc: Checks collection is sorted in descending order.
