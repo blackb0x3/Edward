@@ -117,7 +117,7 @@ class AlgorithmController(Resource):
         if collection_to_use is None or collection_to_use in empty_collection_types:
             # must be at least 5
             # no specific reason
-            min_size = options.get()'min_size', DEFAULT_MIN_COLLECTION_SIZE)
+            min_size = options.get('min_size', DEFAULT_MIN_COLLECTION_SIZE)
 
             if min_size < DEFAULT_MIN_COLLECTION_SIZE:
                 min_size = DEFAULT_MIN_COLLECTION_SIZE
