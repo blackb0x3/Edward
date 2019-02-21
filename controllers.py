@@ -101,7 +101,7 @@ class AlgorithmController(Resource):
         other_results = dict()
         other_results_json = dict()
 
-        for name in args["other_algorithms"]:
+        for name in other_algs:
             other_results.update({ name: dict() })
             other_results_json.update({ name: dict() })
 
@@ -114,9 +114,10 @@ class AlgorithmController(Resource):
             dict()
         ]
 
+        options = kwargs.get('options', dict())
+
         if collection_to_use is None or collection_to_use in empty_collection_types:
             # must be at least 5
-            # no specific reason
             min_size = options.get('min_size', DEFAULT_MIN_COLLECTION_SIZE)
 
             if min_size < DEFAULT_MIN_COLLECTION_SIZE:
@@ -170,7 +171,7 @@ class AlgorithmController(Resource):
 
         results = {
             "original_algorithm": {
-                "name": algorithmname,
+                "name": algname,
                 "result": original_results
             },
             "other_algorithms": other_results
@@ -178,14 +179,14 @@ class AlgorithmController(Resource):
 
         results_json = {
             "original_algorithm": {
-                "name": algorithmname,
+                "name": algname,
                 "result": original_results_json
             },
             "other_algorithms": { name: other_results_json[name] for name in other_algorithm_classes.keys()}
         }
 
         if options['makegraph'] is True:
-            results_json['graph'] = CompareChart.new(results, set([algorithmname] + args["other_algorithms"]))
+            results_json['graph'] = CompareChart.new(results, algname, set(other_algs))
         else:
             results_json['graph'] = None
 
