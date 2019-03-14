@@ -136,7 +136,7 @@ class BinarySearch(OneDimensionalSearch):
 
 
 class TernarySearch(OneDimensionalSearch):
-    def executge(self):
+    def execute(self):
         """
         Executes the ternary search algorithm on the list - assuming it is sorted!
         """
