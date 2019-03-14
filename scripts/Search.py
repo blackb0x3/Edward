@@ -2,15 +2,21 @@ from scripts.Algorithm import Algorithm, AlgorithmError
 import numpy as np
 
 
-class LinearSearch(Algorithm):
+class OneDimensionalSearch(Algorithm):
     """
     Base class for algorithms searching in linear space complexity (lists, arrays etc.)
     """
 
     def __init__(self, *args, **kwargs):
-        self.output = list()
-        self.value_to_find = kwargs.get('find')
         super().__init__(self, args, kwargs)
+
+        self.value_to_find = kwargs.get('find')
+
+        self.output = {
+            "success": False,
+            "value_to_find": self.value_to_find,
+            "found_at": -1
+        }
 
     def generate_collection(self, *args, **kwargs):
         """
@@ -61,10 +67,78 @@ class LinearSearch(Algorithm):
         correctly identified whether the value could be found or not.
         """
 
-        if self.output[0] is True and self.output[1] == self.value_to_find:
+        if self.output["success"] is True and self.output["found_at"] > -1:
             return True
-        elif self.output[0] is False and self.output[1] is None and self.value_to_find is None:
+        elif self.output["success"] is False and self.output["found_at"] == -1 and self.value_to_find is None:
             return True
 
         return False
 
+
+class LinearSearch(OneDimensionalSearch):
+    def execute(self):
+        """
+        Executes the linear search algorithm on the list.
+        """
+        size = len(self.oldcollection)
+        c = 0
+
+        while c < size:
+            if self.oldcollection[c] == self.value_to_find:
+                self.output["success"] = True
+                self.output["found_at"] = self.oldcollection[c]
+                return
+            c += 1
+
+
+class BilinearSearch(OneDimensionalSearch):
+    def execute(self):
+        """
+        Executes the bilinear search algorithm on the list.
+        """
+        size = len(self.oldcollection)
+        c_left = 0
+        c_right = -1
+
+        while c_left < size // 2:
+            if self.oldcollection[c_left] == self.value_to_find:
+                self.output["success"] = True
+                self.output["found_at"] = self.oldcollection[c_left]
+                return
+            elif self.oldcollection[c_right] == self.value_to_find:
+                self.output["success"] = True
+                self.output["found_at"] = self.oldcollection[c_right]
+                return
+            c_left += 1
+            c_right -= 1
+
+
+class BinarySearch(OneDimensionalSearch):
+    def execute(self):
+        """
+        Executes the binary search algorithm on the list - assuming it is sorted!
+        """
+        size = len(self.oldcollection)
+        c_left = 0
+        c_right = size - 1
+
+        while c_left <= c_right:
+            pivot = floor((c_left + c_right) / 2)
+
+            if self.oldcollection[pivot] < self.value_to_find:
+                c_left = pivot + 1
+            elif self.oldcollection[pivot] > self.value_to_find:
+                c_right = pivot - 1
+            else:
+                self.output["success"] = True
+                self.output["found_at"] = self.oldcollection[pivot]
+                return
+
+
+class TernarySearch(OneDimensionalSearch):
+    def executge(self):
+        """
+        Executes the ternary search algorithm on the list - assuming it is sorted!
+        """
+        # TODO - this looks ridiculously over-complicated to do right now. Come back later!
+        pass
