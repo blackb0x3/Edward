@@ -18,6 +18,8 @@ class Algorithm:
         :raises ValueError if the collection type is invalid, and will not allow the algorithm to execute() correctly.
         """
 
+        self.oldcollection = None
+
         data = kwargs.get('data', None)
         size = kwargs.get('size', 10)
 
@@ -32,8 +34,9 @@ class Algorithm:
         self.starttime = None
         self.endtime = None
         self.timetaken = None
-        self.newcollection = None
+        self.newcollection = None # this represents a modified version of self.oldcollection, which could be the output of some types of algorithms, e.g. a sort
         self.executed = False
+        self.output = None # this represents any output provided by an algorithm where the type is not the same as self.oldcollection, e.g. a boolean
 
     def __dict__(self):
         return {
