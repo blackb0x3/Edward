@@ -14,7 +14,7 @@ class OneDimensionalSearch(Algorithm):
 
         self.output = {
             "value_to_find" : self.value_to_find,
-              "value_found" : False
+              "value_found" : False,
                  "found_at" : -1
         }
 
