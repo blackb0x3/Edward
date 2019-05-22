@@ -141,4 +141,4 @@ class TernarySearch(OneDimensionalSearch):
         Executes the ternary search algorithm on the list - assuming it is sorted!
         """
         # TODO - this looks ridiculously over-complicated to do right now. Come back later!
-        pass
+        raise NotImplementedError("Unavailable. Implementation is not ready yet.")
