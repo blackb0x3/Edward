@@ -39,14 +39,24 @@ class Algorithm:
         self.output = None # this represents any output provided by an algorithm where the type is not the same as self.oldcollection, e.g. a boolean
 
     def __dict__(self):
-        return {
-            "successful_execution": self.executed,
-            "input": self.oldcollection,
-            "output": self.newcollection,
-            "execution_start": self.starttime.strftime("%Y-%m-%d %H:%M:%S"),
-            "execution_end": self.endtime.strftime("%Y-%m-%d %H:%M:%S"),
-            "execution_time": str(self.timetaken)
-        }
+        if self.output is None:
+            return {
+                "successful_execution": self.executed,
+                "input": self.oldcollection,
+                "output": self.newcollection,
+                "execution_start": self.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+                "execution_end": self.endtime.strftime("%Y-%m-%d %H:%M:%S"),
+                "execution_time": str(self.timetaken)
+            }
+        else:
+            return {
+                "successful_execution": self.executed,
+                "input": self.oldcollection,
+                "output": self.output,
+                "execution_start": self.starttime.strftime("%Y-%m-%d %H:%M:%S"),
+                "execution_end": self.endtime.strftime("%Y-%m-%d %H:%M:%S"),
+                "execution_time": str(self.timetaken)
+            }
 
     def run(self):
         """
