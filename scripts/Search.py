@@ -30,6 +30,7 @@ class OneDimensionalSearch(Algorithm):
         list_max = kwargs.get('max', 1000)
         size = kwargs.get('size', 10)
 
+        # pick random integers for the list between given min and max numbers from request
         coll = [int(v) for v in np.random.choice(range(list_min, list_max + 1), size)]
 
         shuffles = 5
