@@ -13,9 +13,9 @@ class OneDimensionalSearch(Algorithm):
         self.value_to_find = kwargs.get('find')
 
         self.output = {
-            "success": False,
-            "value_to_find": self.value_to_find,
-            "found_at": -1
+            "value_to_find" : self.value_to_find,
+              "value_found" : False
+                 "found_at" : -1
         }
 
     def generate_collection(self, *args, **kwargs):
@@ -67,9 +67,9 @@ class OneDimensionalSearch(Algorithm):
         correctly identified whether the value could be found or not.
         """
 
-        if self.output["success"] is True and self.output["found_at"] > -1:
+        if self.output["value_found"] is True and self.output["found_at"] > -1:
             return True
-        elif self.output["success"] is False and self.output["found_at"] == -1 and self.value_to_find is None:
+        elif self.output["value_found"] is False and self.output["found_at"] == -1 and self.value_to_find not in self.oldcollection:
             return True
 
         return False
@@ -85,7 +85,7 @@ class LinearSearch(OneDimensionalSearch):
 
         while c < size:
             if self.oldcollection[c] == self.value_to_find:
-                self.output["success"] = True
+                self.output["value_found"] = True
                 self.output["found_at"] = self.oldcollection[c]
                 return
             c += 1
@@ -102,11 +102,11 @@ class BilinearSearch(OneDimensionalSearch):
 
         while c_left < size // 2:
             if self.oldcollection[c_left] == self.value_to_find:
-                self.output["success"] = True
+                self.output["value_found"] = True
                 self.output["found_at"] = self.oldcollection[c_left]
                 return
             elif self.oldcollection[c_right] == self.value_to_find:
-                self.output["success"] = True
+                self.output["value_found"] = True
                 self.output["found_at"] = self.oldcollection[c_right]
                 return
             c_left += 1
@@ -123,14 +123,14 @@ class BinarySearch(OneDimensionalSearch):
         c_right = size - 1
 
         while c_left <= c_right:
-            pivot = floor((c_left + c_right) / 2)
+            pivot = np.floor((c_left + c_right) / 2)
 
             if self.oldcollection[pivot] < self.value_to_find:
                 c_left = pivot + 1
             elif self.oldcollection[pivot] > self.value_to_find:
                 c_right = pivot - 1
             else:
-                self.output["success"] = True
+                self.output["value_found"] = True
                 self.output["found_at"] = self.oldcollection[pivot]
                 return
 
