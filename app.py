@@ -5,7 +5,7 @@ from flask_restful import reqparse, abort, Api, Resource
 
 from controllers import AlgorithmController, AlgorithmListController, GraphController
 
-REACT_BUILD_COMMAND = "cd .\static && yarn run build"
+REACT_BUILD_COMMAND = "cd static && yarn run build"
 
 app = Flask(__name__, template_folder="./static/dist")
 api = Api(app)
