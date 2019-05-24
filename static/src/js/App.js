@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter, Route } from "react-router-dom";
 
 import EdwardNav from "./components/EdwardNav";
 import Home from "./pages/Home";
+import Algorithm from "./components/Algorithm";
 
 export default class App extends Component {
   constructor(props) {
@@ -24,12 +25,12 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <EdwardNav></EdwardNav>
-        <Router>
-          <Route path="/" component={Home}></Route>
-          <Route path="/home" component={Home}></Route>
-          {/*<Route path="/sorting" component={}></Route>*/}
-        </Router>
+        <BrowserRouter>
+          <EdwardNav></EdwardNav>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/home" component={Home} />
+          <Route path="/sorting/insertion-sort" exact component={Algorithm} />
+        </BrowserRouter>
       </div>
     );
   }

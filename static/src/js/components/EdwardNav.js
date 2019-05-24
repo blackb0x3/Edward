@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { NavLink as NavLinkRouterDom } from "react-router-dom";
+
 import {
   Collapse,
   Navbar,
@@ -43,18 +45,18 @@ export default class EdwardNav extends Component {
                   Sorting
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem href="/sorting/insertion-sort">
-                    Insertion Sort
+                  <DropdownItem>
+                    <NavLinkRouterDom to="/sorting/insertion-sort">Insertion Sort</NavLinkRouterDom>
                   </DropdownItem>
-                  <DropdownItem href="/sorting/selection-sort">
-                    Selection Sort
+                  <DropdownItem>
+                    <NavLinkRouterDom to="/sorting/selection-sort">Selection Sort</NavLinkRouterDom>
                   </DropdownItem>
-                  <DropdownItem href="/sorting/counting-sort">
-                    Counting Sort
+                  <DropdownItem>
+                    <NavLinkRouterDom to="/sorting/counting-sort">Counting Sort</NavLinkRouterDom>
                   </DropdownItem>
                   <DropdownItem divider />
                   <DropdownItem href="/sorting">
-                    More...
+                    <NavLinkRouterDom to="/sorting">More...</NavLinkRouterDom>
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
@@ -63,23 +65,23 @@ export default class EdwardNav extends Component {
                   Searching
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem href="/searching/linear">
-                    Linear Search
+                  <DropdownItem>
+                    <NavLinkRouterDom to="/searching/linear">Linear Search</NavLinkRouterDom>
                   </DropdownItem>
-                  <DropdownItem href="/searching/bilinear">
-                    Bi-linear Search
+                  <DropdownItem>
+                    <NavLinkRouterDom to="/searching/bilinear">Bi-linear Search</NavLinkRouterDom>
                   </DropdownItem>
-                  <DropdownItem href="/searching/binary">
-                    Binary Search
+                  <DropdownItem>
+                    <NavLinkRouterDom to="/searching/binary">Binary Search</NavLinkRouterDom>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem href="/searching">
-                    More...
+                  <DropdownItem>
+                    <NavLinkRouterDom to="/searching">More...</NavLinkRouterDom>
                   </DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
               <NavItem>
-                <NavLink href="/settings">Settings</NavLink>
+                <NavLink><NavLinkRouterDom to="/settings">Settings</NavLinkRouterDom></NavLink>
               </NavItem>
             </Nav>
           </Collapse>

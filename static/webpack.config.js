@@ -22,7 +22,11 @@ const config = {
             template: "./src/index.html",
             filename: "./index.html"
         })
-    ]
+    ],
+    output: {
+        publicPath: '/',
+        filename: "main.js"
+    }
 };
 
 module.exports = config;
