@@ -23,13 +23,15 @@ export default class App extends Component {
   }
 
   render() {
+    let insertionSortKey = "insertion-sort"
     return (
       <div>
         <BrowserRouter>
           <EdwardNav></EdwardNav>
           <Route exact path="/" component={Home} />
           <Route exact path="/home" component={Home} />
-          <Route path="/sorting/insertion-sort" exact component={Algorithm} />
+          <Route exact path="/sorting/insertion-sort" render={ (props) => <Algorithm {...props} algorithmKey={insertionSortKey} /> } />
+          {/* <Route exact path="/sorting/selection-sort" component={Algorithm} /> */}
         </BrowserRouter>
       </div>
     );
