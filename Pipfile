@@ -10,6 +10,7 @@ networkx = "*"
 Flask = "*"
 Flask-RESTful = "*"
 pylint = "*"
+pymongo = "*"
 
 [dev-packages]
 
