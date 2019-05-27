@@ -94,15 +94,12 @@ class Sort(Algorithm):
 
 
 class InsertionSort(Sort):
-    description = """
-An in-place, comparison-based sorting algorithm. It sorts array by shifting elements one by one and inserting the right
-element at the right position.
-"""
-
-    steps = []
-    best_case = ""
-    average_case = ""
-    worst_case = ""
+    name = "Insertion Sort"
+    description = """An in-place, comparison-based sorting algorithm. It sorts array by shifting elements one by one and inserting the right element at the right position."""
+    steps = ["First Step", "Second Step", "Finally...", "Done"]
+    best_case = "O(n) comparisons, O(1) swaps"
+    average_case = "O(n<sup>2</sup>) comparisons, O(n<sup>2</sup>) swaps"
+    worst_case = "O(n<sup>2</sup>) comparisons, O(n<sup>2</sup>) swaps"
 
     def execute(self):
         """
@@ -124,7 +121,12 @@ element at the right position.
     @staticmethod
     def metadata():
         return {
-            "description": InsertionSort.description.replace('\n', '')
+            "name"        : InsertionSort.name,
+            "description" : InsertionSort.description,
+            "steps"       : InsertionSort.steps,
+            "best_case"   : InsertionSort.best_case,
+            "average_case": InsertionSort.average_case,
+            "worst_case"  : InsertionSort.worst_case
         }
 
 
@@ -518,8 +520,8 @@ class ShellSort(Sort):
                 # original element is now in its correct location
                 self.newcollection[j] = temp
             gap /= 2
-            
-            
+
+
 class CountingSort(Sort):
     description = """"""
     steps = []
