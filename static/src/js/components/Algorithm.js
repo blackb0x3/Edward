@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import {
+  Button,
+  ButtonGroup,
   Card,
   CardHeader,
   CardTitle,
   CardBody,
-  Form,
-  Input,
+  Container,
   Jumbotron
 } from "reactstrap";
 
 import axios from "axios";
+import { List, Graph } from "./AlgorithmInputs/index";
 
 export default class Algorithm extends Component {
   constructor(props) {
@@ -22,11 +24,11 @@ export default class Algorithm extends Component {
       steps       : [],
       bestCase    : "",
       averageCase : "",
-      worstCase   : ""
+      worstCase   : "",
+      action      : "run"
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    
+    this.setAlgorithmAction = this.setAlgorithmAction.bind(this);
   }
 
   componentDidMount() {
@@ -44,16 +46,40 @@ export default class Algorithm extends Component {
       .catch(err => alert(err));
   }
 
-  handleChange() { }
+  setAlgorithmAction(e) {
+    e.preventDefault();
 
-  handleSubmit() { }
+    this.setState({
+      action: e.target.value
+    });
+  }
+
+  validateForm() {
+
+  }
+
+  onPostDataReceived(postData) {
+    console.log(postData);
+  }
 
   render() {
     var stepsHtml = this.state.steps.map((stepText) => {
       return ( <li>{stepText}</li> );
     });
 
-    console.log(stepsHtml);
+    let algorithmFormInput;
+
+    switch (this.props.inputType) {
+      case "list":
+        algorithmFormInput = <List  onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
+        break;
+      case "graph":
+        algorithmFormInput = <Graph onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
+        break;
+      default:
+        algorithmFormInput = <List  onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
+        break;
+    }
 
     return (
       <div>
@@ -72,7 +98,14 @@ export default class Algorithm extends Component {
           </Card>
         </Jumbotron>
         <hr/>
-        <h3>Test it!</h3>
+        <Container>
+          <h3>Try it out!</h3>
+          <ButtonGroup>
+            <Button id="action-run"  className="action" value="run"  onClick={this.setAlgorithmAction} color="primary">Run</Button>
+            <Button id="action-test" className="action" value="test" onClick={this.setAlgorithmAction} color="secondary">Test</Button>
+          </ButtonGroup>
+          {algorithmFormInput}
+        </Container>
       </div>
     );
   }

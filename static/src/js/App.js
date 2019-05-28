@@ -30,7 +30,7 @@ export default class App extends Component {
           <EdwardNav></EdwardNav>
           <Route exact path="/" component={Home} />
           <Route exact path="/home" component={Home} />
-          <Route exact path="/sorting/insertion-sort" render={ (props) => <Algorithm {...props} algorithmKey={insertionSortKey} /> } />
+          <Route exact path="/sorting/insertion-sort" render={ (props) => <Algorithm {...props} algorithmKey={insertionSortKey} inputType="list" /> } />
           {/* <Route exact path="/sorting/selection-sort" component={Algorithm} /> */}
         </BrowserRouter>
       </div>
