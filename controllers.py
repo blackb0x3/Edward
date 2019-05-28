@@ -244,6 +244,7 @@ class AlgorithmController(Resource):
             }
 
             # use pure default options if no options are provided
+            # use default options with overrides from http request
             options_not_provided = args['options'] is None or args['options'] == {}
             options = default_options if options_not_provided else {**default_options, **args['options']}
 
