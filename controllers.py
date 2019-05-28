@@ -1,7 +1,8 @@
+import os, random
+
 from flask_restful import Resource, abort, reqparse
 from flask import send_file
-import os
-import random
+from pymongo import MongoClient
 from typing import Dict
 
 from scripts import Sorts
@@ -39,6 +40,10 @@ class AlgorithmController(Resource):
         "test",
         "compare"
     ]
+
+    mongo_client = MongoClient("mongodb://localhost:27017")
+    db = client.Edward
+    results_collection = db.algorithm_results
 
     def check_algorithm_exists(self, algorithmname):
         if algorithmname not in algorithmmap.keys():
@@ -78,12 +83,14 @@ class AlgorithmController(Resource):
             algorithm_results.update({size: results_for_this_size})
             algorithm_results_json.update({size: results_for_this_size_json})
 
-
-
         if options['makegraph'] is True:
             algorithm_results_json['graph'] = TestChart.new(algorithm_results)
         else:
             algorithm_results_json['graph'] = None
+
+        insertion_success = results_collection.insert_one(algorithm_results_json)
+
+        algorithm_results_json["results_cache_id"] = insertion_success.inserted_id
 
         return algorithm_results_json, 200
 
@@ -95,7 +102,7 @@ class AlgorithmController(Resource):
         # compare action will not work otherwise
         same_algorithms = all([original_algorithm_class.__base__ is classdef.__base__ for classdef in other_algorithm_classes])
 
-        if same_algorithms is not True:
+        if same_algorithms is False:
             abort(400, message="The algorithms being compared do not solve the same computational problem.")
 
         other_results = dict()
@@ -190,6 +197,10 @@ class AlgorithmController(Resource):
         else:
             results_json['graph'] = None
 
+        insertion_success = results_collection.insert_one(results_json)
+
+        results_json["results_cache_id"] = insertion_success.inserted_id
+
         return results_json, 200
 
     def get(self, algorithmname):
@@ -251,6 +262,7 @@ class AlgorithmController(Resource):
             options['makegraph'] = False if args['makegraph'] is None else args['makegraph']
 
             if action == "run":
+                #abort(503, message="The {} action is not available.".format(action))
                 return self._run(algname=algorithmname, coll=args['collection'])
 
             if action == "test":
@@ -258,6 +270,7 @@ class AlgorithmController(Resource):
                 return self._test(algname=algorithmname, options=options)
 
             if action == "compare":
+                #abort(503, message="The {} action is not available.".format(action))
                 return self._compare(algname=algorithmname, other_algs=args['other_algorithms'], coll=args['collection'], options=options)
 
 
