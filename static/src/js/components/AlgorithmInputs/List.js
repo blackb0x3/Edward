@@ -7,13 +7,13 @@ export default class List extends Component {
     super(props);
 
     this.state = {
-      key         : props.key,
-      action      : props.action,
-      listSizeMin : 5,
-      listSizeMax : 20,
-      listSizeJump: 1,
-      repeats     : 5,
-      runInputs: {
+      algorithmKey : props.algorithmKey,
+      action       : props.action,
+      listSizeMin  : 5,
+      listSizeMax  : 20,
+      listSizeJump : 1,
+      repeats      : 5,
+      runInputs    : {
         "list-item-0": null
       }
     };
@@ -30,7 +30,7 @@ export default class List extends Component {
     e.preventDefault();
 
     let objToMerge = {};
-    objToMerge[e.target.id] = e.target.value;
+    objToMerge[e.target.id] = parseInt(e.target.value);
 
     let regex = new RegExp(/^\d+$/);
 
@@ -61,9 +61,6 @@ export default class List extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-
-    console.log(this);
-    console.log(e);
 
     let postData = {
       action: this.state.action

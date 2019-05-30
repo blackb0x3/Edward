@@ -18,21 +18,22 @@ export default class Algorithm extends Component {
     super(props);
 
     this.state = {
-      key         : props.algorithmKey,
-      name        : "",
-      description : "",
-      steps       : [],
-      bestCase    : "",
-      averageCase : "",
-      worstCase   : "",
-      action      : "run"
+      algorithmKey : props.algorithmKey,
+      name         : "",
+      description  : "",
+      steps        : [],
+      bestCase     : "",
+      averageCase  : "",
+      worstCase    : "",
+      action       : "run"
     };
     
     this.setAlgorithmAction = this.setAlgorithmAction.bind(this);
+    this.onPostDataReceived = this.onPostDataReceived.bind(this);
   }
 
   componentDidMount() {
-    axios.get(`/api/algorithms/${this.state.key}`)
+    axios.get(`/api/algorithms/${this.state.algorithmKey}`)
       .then(resp => {
         this.setState({
           name        : resp.data.name,
@@ -54,12 +55,12 @@ export default class Algorithm extends Component {
     });
   }
 
-  validateForm() {
-
-  }
-
   onPostDataReceived(postData) {
-    console.log(postData);
+    axios.post(`/api/algorithms/${this.state.algorithmKey}`, postData)
+      .then(resp => {
+        console.log(resp.data);
+      })
+      .catch(err => console.log(err));
   }
 
   render() {
@@ -71,13 +72,13 @@ export default class Algorithm extends Component {
 
     switch (this.props.inputType) {
       case "list":
-        algorithmFormInput = <List  onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
+        algorithmFormInput = <List  algorithmKey={this.state.algorithmKey} onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
         break;
       case "graph":
-        algorithmFormInput = <Graph onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
+        algorithmFormInput = <Graph algorithmKey={this.state.algorithmKey} onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
         break;
       default:
-        algorithmFormInput = <List  onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
+        algorithmFormInput = <List  algorithmKey={this.state.algorithmKey} onPostDataReceived={this.onPostDataReceived} action={this.state.action} />;
         break;
     }
 
@@ -99,7 +100,7 @@ export default class Algorithm extends Component {
         </Jumbotron>
         <hr/>
         <Container>
-          <h3>Try it out!</h3>
+          <h3>Try it out now!</h3>
           <ButtonGroup>
             <Button id="action-run"  className="action" value="run"  onClick={this.setAlgorithmAction} color="primary">Run</Button>
             <Button id="action-test" className="action" value="test" onClick={this.setAlgorithmAction} color="secondary">Test</Button>
