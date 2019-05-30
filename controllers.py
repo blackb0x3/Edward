@@ -42,7 +42,7 @@ class AlgorithmController(Resource):
     ]
 
     mongo_client = MongoClient("mongodb://localhost:27017")
-    db = client.Edward
+    db = mongo_client.Edward
     results_collection = db.algorithm_results
 
     def check_algorithm_exists(self, algorithmname):
@@ -52,7 +52,7 @@ class AlgorithmController(Resource):
         return True
 
     def _run(self, algname, coll):
-        algorithm = algorithmmap[algname](coll)
+        algorithm = algorithmmap[algname](data=coll)
         algorithm.run()
         return algorithm.__dict__(), 200
 
@@ -88,7 +88,7 @@ class AlgorithmController(Resource):
         else:
             algorithm_results_json['graph'] = None
 
-        insertion_success = results_collection.insert_one(algorithm_results_json)
+        insertion_success = AlgorithmController.results_collection.insert_one(algorithm_results_json)
 
         algorithm_results_json["results_cache_id"] = insertion_success.inserted_id
 
@@ -197,7 +197,7 @@ class AlgorithmController(Resource):
         else:
             results_json['graph'] = None
 
-        insertion_success = results_collection.insert_one(results_json)
+        insertion_success = AlgorithmController.results_collection.insert_one(results_json)
 
         results_json["results_cache_id"] = insertion_success.inserted_id
 
@@ -228,12 +228,12 @@ class AlgorithmController(Resource):
             abort(501, message="The {0} algorithm has not been implemented yet.".format(algorithmname))
 
         parser = reqparse.RequestParser(bundle_errors=True)
-        parser.add_argument("action", type=str, required=True)
-        parser.add_argument("makegraph", type=bool, default=False, store_missing=True)
-        parser.add_argument("options", type=dict, default=dict(), store_missing=True)
-        parser.add_argument("collection", type=dict, required=False, store_missing=True)
-        parser.add_argument("first_algorithm", type=str, required=False, store_missing=False)
-        parser.add_argument("second_algorithm", type=str, required=False, store_missing=False)
+        parser.add_argument("action", type=str, required=True, location='json')
+        parser.add_argument("makegraph", type=bool, default=False, store_missing=True, location='json')
+        parser.add_argument("options", type=dict, default=dict(), store_missing=True, location='json')
+        parser.add_argument("collection", type=list, required=False, store_missing=True, location='json')
+        parser.add_argument("first_algorithm", type=str, required=False, store_missing=False, location='json')
+        parser.add_argument("second_algorithm", type=str, required=False, store_missing=False, location='json')
 
         # contains all post data from request
         args = parser.parse_args()
