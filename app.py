@@ -1,11 +1,7 @@
-import subprocess
-
 from flask import Flask, redirect, json, render_template
 from flask_restful import reqparse, abort, Api, Resource
 
 from controllers import AlgorithmController, AlgorithmListController, GraphController
-
-REACT_BUILD_COMMAND = "cd static && yarn run build"
 
 app = Flask(__name__, template_folder="./static/dist")
 api = Api(app)
@@ -30,5 +26,4 @@ def index():
 ################# END OF APP ENDPOINT #################
 
 if __name__ == '__main__':
-    subprocess.run(REACT_BUILD_COMMAND, shell=True)
     app.run(debug=True)
