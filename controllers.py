@@ -57,9 +57,9 @@ class AlgorithmController(Resource):
         return algorithm.__dict__(), 200
 
     def _test(self, algname, options, verbose):
-        min_size = options['min_size'] # TODO must be at least 5
-        max_size = options['max_size'] # TODO must be at least 10
-        jump     = options['jump'] # TODO must be at least 1
+        min_size = int(options['min_size']) # TODO must be at least 5
+        max_size = int(options['max_size']) # TODO must be at least 10
+        jump     = int(options['jump']) # TODO must be at least 1
         #repeats = options['repeats'] # TODO must be at least 3
 
         algorithm_results = {}
@@ -69,7 +69,7 @@ class AlgorithmController(Resource):
             results_for_this_size = []
             results_for_this_size_json = []
 
-            repeats = options['repeats'] # TODO must be at least 3
+            repeats = int(options['repeats']) # TODO must be at least 3
 
             while repeats > 0:
                 # get algorithm class from map, instantiate and run
