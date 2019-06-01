@@ -18,6 +18,7 @@ export default class List extends Component {
       }
     };
 
+    this.handleTestInputChange = this.handleTestInputChange.bind(this);
     this.handleListElementChange = this.handleListElementChange.bind(this);
     this.pushRunInput = this.pushRunInput.bind(this);
     this.popRunInput  = this.popRunInput.bind(this);
@@ -25,6 +26,14 @@ export default class List extends Component {
   }
 
   componentDidMount() { }
+
+  handleTestInputChange(e) {
+    e.preventDefault();
+
+    this.setState({
+      [e.target.id]: e.target.value
+    }, () => console.log(this.state));
+  }
 
   handleListElementChange(e) {
     e.preventDefault();
@@ -119,8 +128,10 @@ export default class List extends Component {
             <Input
               type="number"
               name="listSizeMin"
+              id="listSizeMin"
               min='5'
               step='1'
+              onChange={this.handleTestInputChange}
             />
           </FormGroup>
         </Col>{' '}
@@ -130,8 +141,10 @@ export default class List extends Component {
             <Input
               type="number"
               name="listSizeMax"
+              id="listSizeMax"
               min='10'
               step='1'
+              onChange={this.handleTestInputChange}
             />
           </FormGroup>
         </Col>{' '}
@@ -141,8 +154,10 @@ export default class List extends Component {
             <Input
               type="number"
               name="listSizeJump"
+              id="listSizeJump"
               min='1'
               step='1'
+              onChange={this.handleTestInputChange}
             />
           </FormGroup>
         </Col>{' '}
@@ -152,8 +167,10 @@ export default class List extends Component {
             <Input
               type="number"
               name="repeats"
+              id="repeats"
               min='3'
               step='1'
+              onChange={this.handleTestInputChange}
             />
           </FormGroup>
         </Col>
