@@ -1,4 +1,4 @@
-import os, random
+import os, random, numpy as np
 
 from flask_restful import Resource, abort, reqparse
 from flask import send_file
@@ -56,7 +56,7 @@ class AlgorithmController(Resource):
         algorithm.run()
         return algorithm.__dict__(), 200
 
-    def _test(self, algname, options):
+    def _test(self, algname, options, verbose):
         min_size = options['min_size'] # TODO must be at least 5
         max_size = options['max_size'] # TODO must be at least 10
         jump     = options['jump'] # TODO must be at least 1
@@ -83,16 +83,25 @@ class AlgorithmController(Resource):
             algorithm_results.update({size: results_for_this_size})
             algorithm_results_json.update({size: results_for_this_size_json})
 
-        if options['makegraph'] is True:
-            algorithm_results_json['graph'] = TestChart.new(algorithm_results)
+        ############################## OBSOLETE!! #############################
+        #if options['makegraph'] is True:
+        #    algorithm_results_json['graph'] = TestChart.new(algorithm_results)
+        #else:
+        #    algorithm_results_json['graph'] = None
+        ########################### END OF OBSOLETE ###########################
+
+        ################################### TO BE FIXED ###################################
+        #insertion_success = AlgorithmController.results_collection.insert_one(algorithm_results_json)
+
+        #algorithm_results_json["results_cache_id"] = insertion_success.inserted_id
+        ################################### TO BE FIXED ###################################
+
+        if verbose is False:
+            to_return = self.cut_down_test_results(algorithm_results)
         else:
-            algorithm_results_json['graph'] = None
+            to_return = algorithm_results_json
 
-        insertion_success = AlgorithmController.results_collection.insert_one(algorithm_results_json)
-
-        algorithm_results_json["results_cache_id"] = insertion_success.inserted_id
-
-        return algorithm_results_json, 200
+        return to_return, 200
 
     def _compare(self, algname, other_algs, **kwargs):
         original_algorithm_class = algorithmmap[algname]
@@ -197,11 +206,22 @@ class AlgorithmController(Resource):
         else:
             results_json['graph'] = None
 
-        insertion_success = AlgorithmController.results_collection.insert_one(results_json)
+        #insertion_success = AlgorithmController.results_collection.insert_one(results_json)
 
-        results_json["results_cache_id"] = insertion_success.inserted_id
+        #results_json["results_cache_id"] = insertion_success.inserted_id
 
         return results_json, 200
+
+    def cut_down_test_results(self, algorithm_results):
+        to_return = {}
+        execution_times = {}
+        for size, algorithms in algorithm_results.items():
+            average_execution_time = np.average([algorithm.timetaken.total_seconds() for algorithm in algorithms])
+            execution_times.update({size: average_execution_time})
+
+        to_return['sizes'] = list(execution_times.keys())
+        to_return['times'] = list(execution_times.values())
+        return to_return
 
     def get(self, algorithmname):
         """
@@ -225,7 +245,7 @@ class AlgorithmController(Resource):
         try:
             algorithmmap[algorithmname].metadata()
         except NotImplementedError:
-            abort(501, message="The {0} algorithm has not been implemented yet.".format(algorithmname))
+            abort(501, message="The {} algorithm has not been implemented yet.".format(algorithmname))
 
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("action", type=str, required=True, location='json')
@@ -234,6 +254,7 @@ class AlgorithmController(Resource):
         parser.add_argument("collection", type=list, required=False, store_missing=True, location='json')
         parser.add_argument("first_algorithm", type=str, required=False, store_missing=False, location='json')
         parser.add_argument("second_algorithm", type=str, required=False, store_missing=False, location='json')
+        parser.add_argument("verbose", type=bool, required=False, default=False, location='json')
 
         # contains all post data from request
         args = parser.parse_args()
@@ -268,7 +289,7 @@ class AlgorithmController(Resource):
 
             if action == "test":
                 #abort(503, message="The {} action is not available.".format(action))
-                return self._test(algname=algorithmname, options=options)
+                return self._test(algname=algorithmname, options=options, verbose=args['verbose'])
 
             if action == "compare":
                 #abort(503, message="The {} action is not available.".format(action))
