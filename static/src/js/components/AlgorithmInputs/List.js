@@ -63,10 +63,10 @@ export default class List extends Component {
     e.preventDefault();
 
     let postData = {
-      action: this.state.action
+      action: this.props.action
     };
     
-    switch (this.state.action) {
+    switch (this.props.action) {
       case "run":
         postData["collection"] = Object.values(this.state.runInputs);
         break;
@@ -172,9 +172,9 @@ export default class List extends Component {
       </div>
     );
 
-    if (this.state.action === "run") {
+    if (this.props.action === "run") {
       return runHtml;
-    } else if (this.state.action === "test") {
+    } else if (this.props.action === "test") {
       return testHtml;
     } else {
       return defaultHtml;
