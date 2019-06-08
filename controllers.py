@@ -280,9 +280,23 @@ class AlgorithmController(Resource):
             options_not_provided = args['options'] is None or args['options'] == {}
             options = default_options if options_not_provided else {**default_options, **args['options']}
 
-            # don't make graph unless specified otherwise
-            options['makegraph'] = False if args['makegraph'] is None else args['makegraph']
+            # error checking in options parameter
+            if int(options['min_size']) < 5:
+                abort(400, message="The test collections must have at least 5 elements.")
 
+            if int(options['max_size']) < 10:
+                abort(400, message="The last test collection must have at least 10 elements.")
+
+            if int(options['jump']) < 1:
+                abort(400, message="Invalid number of collection sizes to jump. Must be greater than or equal to 1.")
+
+            if int(options['repeats']) < 3:
+                abort(400, message="You must repeat each collection size at least 3 times.")
+
+            # obsolete - graphs are produced in the front-end
+            #options['makegraph'] = False if args['makegraph'] is None else args['makegraph']
+
+            # TODO set endpoint responses in .htaccess file for each action, instead of updating codebase
             if action == "run":
                 #abort(503, message="The {} action is not available.".format(action))
                 return self._run(algname=algorithmname, coll=args['collection'])
