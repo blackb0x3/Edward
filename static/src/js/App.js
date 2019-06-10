@@ -5,6 +5,8 @@ import EdwardNav from "./components/EdwardNav";
 import Home from "./pages/Home";
 import Algorithm from "./components/Algorithm";
 
+import INPUT_OUTPUT_TYPES from "./config";
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -28,9 +30,25 @@ export default class App extends Component {
       <div>
         <BrowserRouter>
           <EdwardNav></EdwardNav>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/sorting/insertion-sort" render={ (props) => <Algorithm {...props} algorithmKey={insertionSortKey} inputType="list" /> } />
+
+          <Route
+            exact
+            path="/"
+            component={Home}
+          />
+
+          <Route
+            exact
+            path="/home"
+            component={Home}
+          />
+
+          <Route
+            exact
+            path="/sorting/insertion-sort"
+            render={ (props) => <Algorithm {...props} algorithmKey={insertionSortKey} inputType={INPUT_OUTPUT_TYPES.LIST} outputType={INPUT_OUTPUT_TYPES.LIST} /> }
+          />
+          
           {/* <Route exact path="/sorting/selection-sort" component={Algorithm} /> */}
         </BrowserRouter>
       </div>
