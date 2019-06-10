@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Col, Input, Row } from "reactstrap";
 import Plot from "react-plotly.js";
+import INPUT_OUTPUT_TYPES from "../config";
 
 export default class AlgorithmOutput extends Component {
   constructor(props) {
@@ -17,41 +18,59 @@ export default class AlgorithmOutput extends Component {
   componentDidMount() { }
 
   render() {
-    let outputHtml;
+    let inputPart, outputPart, outputHtml;
 
     // only display the input and output if we run the algorithm once
     if (this.props.action === "run") {
       switch (this.props.inputType) {
-        case "list":
-            let elementInputComponents = this.props.results.input.map(elmnt => <Col md={2}><Input type="text" className="element-input-component" readOnly={true} value={elmnt} /></Col> );
-            let elementOutputComponents = this.props.results.output.map(elmnt => <Col md={2}><Input type="text" className="element-output-component" readOnly={true} value={elmnt} /></Col> );
-            outputHtml = (
-              <Col md={6}>
-                <Row>
-                  {elementInputComponents}
-                </Row>
-                <Row>
-                  {elementOutputComponents}
-                </Row>
-                <Row>
-                  <p>Execution Time: {this.props.results['execution_time']}</p>
-                </Row>
-              </Col>
-            );
+        case INPUT_OUTPUT_TYPES.LIST:
+          inputPart = this.props.results.input.map(elmnt => <Col md={2}><Input type="text" className="element-input-component" readOnly={true} value={elmnt} /></Col> );
           break;
 
-        case "graph":
-          inputOutputHtml = ( <div>Hello World!</div> );
+        case INPUT_OUTPUT_TYPES.GRAPH:
+          inputPart = ( <div>Hello World!</div> );
           break;
 
-        case "string":
-          inputOutputHtml = ( <div>Hello World!</div> );
+        case INPUT_OUTPUT_TYPES.STRING:
+          inputPart = ( <div>Hello World!</div> );
           break;
 
         default:
-          inputOutputHtml = ( <div>Hello World!</div> );
+          inputPart = ( <div>Hello World!</div> );
           break;
       }
+
+      switch (this.props.outputType) {
+        case INPUT_OUTPUT_TYPES.LIST:
+          outputPart = this.props.results.output.map(elmnt => <Col md={2}><Input type="text" className="element-output-component" readOnly={true} value={elmnt} /></Col> );
+          break;
+
+        case INPUT_OUTPUT_TYPES.GRAPH:
+          outputPart = ( <div>Hello World!</div> );
+          break;
+
+        case INPUT_OUTPUT_TYPES.STRING:
+          outputPart = ( <div>Hello World!</div> );
+          break;
+
+        default:
+          outputPart = ( <div>Hello World!</div> );
+          break;
+      }
+
+      outputHtml = (
+        <Col md={6}>
+          <Row>
+            {inputPart}
+          </Row>
+          <Row>
+            {outputPart}
+          </Row>
+          <Row>
+            <p>Execution Time: {this.props.results['execution_time']}</p>
+          </Row>
+        </Col>
+      );
     }
 
     // test action on Python side uses different collections per repeat and / or jump
