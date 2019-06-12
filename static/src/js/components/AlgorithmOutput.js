@@ -32,7 +32,9 @@ export default class AlgorithmOutput extends Component {
           break;
 
         case INPUT_OUTPUT_TYPES.STRING:
-          inputPart = ( <div>Hello World!</div> );
+        case INPUT_OUTPUT_TYPES.BOOLEAN:
+        case INPUT_OUTPUT_TYPES.NUMBER:
+          inputPart = ( <div>{this.props.results.input}</div> );
           break;
 
         default:
@@ -50,7 +52,9 @@ export default class AlgorithmOutput extends Component {
           break;
 
         case INPUT_OUTPUT_TYPES.STRING:
-          outputPart = ( <div>Hello World!</div> );
+        case INPUT_OUTPUT_TYPES.BOOLEAN:
+        case INPUT_OUTPUT_TYPES.NUMBER:
+          outputPart = ( <div>{this.props.results.output}</div> );
           break;
 
         default:
