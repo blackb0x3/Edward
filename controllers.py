@@ -313,3 +313,11 @@ class AlgorithmController(Resource):
 class GraphController(Resource):
     def get(self, graphid):
         return send_file(os.path.join(ROOT_DIR, "images/graphs/", graphid + ".png"), mimetype="image/png")
+
+  
+class AlgorithmTypesController(Resource):
+    def get(self, algorithmtype):
+        if algorithmtype == "sorting":
+            return list(sorts.keys()), 200
+        else:
+            abort(400, message="Algorithm type '{0}' does not yet exist within the API.")

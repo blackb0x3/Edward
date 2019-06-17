@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Algorithm from "./components/Algorithm";
 
 import INPUT_OUTPUT_TYPES from "./config";
+import AlgorithmType from "./pages/AlgorithmType";
 
 export default class App extends Component {
   constructor(props) {
@@ -47,6 +48,12 @@ export default class App extends Component {
             exact
             path="/sorting/insertion-sort"
             render={ (props) => <Algorithm {...props} algorithmKey={insertionSortKey} inputType={INPUT_OUTPUT_TYPES.LIST} outputType={INPUT_OUTPUT_TYPES.LIST} /> }
+          />
+
+          <Route
+            exact
+            path="/sorting"
+            render={ (props) => <AlgorithmType {...props} algorithmType="sorting" /> }
           />
           
           {/* <Route exact path="/sorting/selection-sort" component={Algorithm} /> */}
