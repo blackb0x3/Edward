@@ -9,19 +9,58 @@ from scripts import Sorts
 from scripts.Chart import CompareChart, TestChart
 from config import ROOT_DIR, DEFAULT_MIN_COLLECTION_SIZE, DEFAULT_MAX_COLLECTION_SIZE
 
+ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY = "name"
+ALGORITHM_OBJECT_CLASS_DICT_KEY = "class"
+
 sorts = {
-    "insertion-sort":          Sorts.InsertionSort,
-    "selection-sort":          Sorts.SelectionSort,
-    "optimised-bubble-sort":   Sorts.OptimisedBubbleSort,
-    "traditional-bubble-sort": Sorts.TraditionalBubbleSort,
-    "recursive-quick-sort":    Sorts.RecursiveQuickSort,
-    "iterative-quick-sort":    Sorts.IterativeQuickSort,
-    "top-down-merge-sort":     Sorts.TopDownMergeSort,
-    "bottom-up-merge-sort":    Sorts.BottomUpMergeSort,
-    "heap-sort":               Sorts.HeapSort,
-    "shell-sort":              Sorts.ShellSort,
-    "counting-sort":           Sorts.CountingSort,
-    "bucket-sort":             Sorts.BucketSort
+    "insertion-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "INSERTION SORT",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.InsertionSort
+    },
+    "selection-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Selection Sort",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.SelectionSort
+    },
+    "traditional-bubble-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Traditional Bubble Sort",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.TraditionalBubbleSort
+    },
+    "optimised-bubble-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Optimised Bubble Sort",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.OptimisedBubbleSort
+    },
+    "recursive-quick-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Quick Sort - Recursive Version",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.RecursiveQuickSort
+    },
+    "iterative-quick-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Quick Sort - Iterative Version",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.IterativeQuickSort
+    },
+    "top-down-merge-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Merge Sort - Top Down Approach",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.TopDownMergeSort
+    },
+    "bottom-up-merge-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Merge Sort - Bottom Up Appproach",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.BottomUpMergeSort
+    },
+    "heap-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Heap Sort",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.HeapSort
+    },
+    "shell-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Shell Sort",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.ShellSort
+    },
+    "counting-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Counting Sort",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.CountingSort
+    },
+    "bucket-sort": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Bucket Sort",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Sorts.BucketSort
+    }
 }
 
 algorithmmap = {**sorts} # type: Dict[str, Algorithm]
@@ -52,7 +91,7 @@ class AlgorithmController(Resource):
         return True
 
     def _run(self, algname, coll):
-        algorithm = algorithmmap[algname](data=coll)
+        algorithm = algorithmmap[algname][ALGORITHM_OBJECT_CLASS_DICT_KEY](data=coll)
         algorithm.run()
         return algorithm.__dict__(), 200
 
@@ -73,7 +112,7 @@ class AlgorithmController(Resource):
 
             while repeats > 0:
                 # get algorithm class from map, instantiate and run
-                algorithm = algorithmmap[algname](size=size)
+                algorithm = algorithmmap[algname][ALGORITHM_OBJECT_CLASS_DICT_KEY](size=size)
                 algorithm.run()
 
                 results_for_this_size.append(algorithm)
@@ -104,8 +143,11 @@ class AlgorithmController(Resource):
         return to_return, 200
 
     def _compare(self, algname, other_algs, **kwargs):
-        original_algorithm_class = algorithmmap[algname]
-        other_algorithm_classes = {k: algorithmmap[k] for k in set(other_algs)}
+        # gets the class from the global algorithms dictionary - algorithmmap
+        original_algorithm_class = algorithmmap[algname][ALGORITHM_OBJECT_CLASS_DICT_KEY]
+
+        # gets the other algorithm classes via the provided 'other_algs' list of algorithm keys
+        other_algorithm_classes = {k: algorithmmap[k][ALGORITHM_OBJECT_CLASS_DICT_KEY] for k in set(other_algs)}
 
         # check if all algorithms solve the same computational problem
         # compare action will not work otherwise
@@ -231,7 +273,7 @@ class AlgorithmController(Resource):
         self.check_algorithm_exists(algorithmname)
 
         try:
-            return algorithmmap[algorithmname].metadata(), 200
+            return algorithmmap[algorithmname][ALGORITHM_OBJECT_CLASS_DICT_KEY].metadata(), 200
         except NotImplementedError:
             abort(501, message="There is no metadata available for the {0} algorithm.".format(algorithmname))
 
@@ -243,7 +285,7 @@ class AlgorithmController(Resource):
         self.check_algorithm_exists(algorithmname)
 
         try:
-            algorithmmap[algorithmname].metadata()
+            algorithmmap[algorithmname][ALGORITHM_OBJECT_CLASS_DICT_KEY].metadata()
         except NotImplementedError:
             abort(501, message="The {} algorithm has not been implemented yet.".format(algorithmname))
 
@@ -316,8 +358,11 @@ class GraphController(Resource):
 
   
 class AlgorithmTypesController(Resource):
+    def _get_keys_with_frontend_names(self, keys: list):
+        return dict([(key, algorithmmap[key][ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY]) for key in keys])
+
     def get(self, algorithmtype):
         if algorithmtype == "sorting":
-            return list(sorts.keys()), 200
+            return self._get_keys_with_frontend_names(list(sorts.keys())), 200
         else:
             abort(400, message="Algorithm type '{0}' does not yet exist within the API.")

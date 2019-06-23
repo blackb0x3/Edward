@@ -22,18 +22,9 @@ export default class AlgorithmType extends Component {
   componentDidMount() {
     axios.get(`/api/algorithmType/${this.state.algorithmType}`)
       .then(resp => {
-        let keyList = resp.data;
-
-        for (let key of keyList) {
-          axios.get(`/api/algorithms/${key}`)
-            .then(resp => this.setState(prevState => ({
-              algorithmKeys : {
-                ...prevState.algorithmKeys,
-                key : resp.data.name
-              }
-            })))
-            .catch(err => alert(err));
-        }
+        this.setState({
+          algorithmKeys: resp.data
+        });
       })
       .catch(err => alert(err));
   }
