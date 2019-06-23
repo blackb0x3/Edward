@@ -1,6 +1,6 @@
 {
   "name": "Edward",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Flask / React web app which demonstrates the time and space complexity of various algorithms.",
   "main": "index.js",
   "keywords": [
