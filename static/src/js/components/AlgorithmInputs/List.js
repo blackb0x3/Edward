@@ -100,7 +100,7 @@ export default class List extends Component {
         <Col>
           <FormGroup>
             <Row>
-              {Object.keys(this.state.runInputs).map(input => <Col md={1}><Input type="text" className="listElementInput" id={input} onChange={this.handleListElementChange} />{' '}</Col> )}
+              {Object.keys(this.state.runInputs).map(input => <Col md={3}><Input type="text" className="listElementInput" id={input} onChange={this.handleListElementChange} />{' '}</Col> )}
             </Row>
           </FormGroup>
         </Col>

@@ -24,7 +24,7 @@ export default class AlgorithmOutput extends Component {
     if (this.props.action === "run") {
       switch (this.props.inputType) {
         case INPUT_OUTPUT_TYPES.LIST:
-          inputPart = this.props.results.input.map(elmnt => <Col md={2}><Input type="text" className="element-input-component" readOnly={true} value={elmnt} /></Col> );
+          inputPart = this.props.results.input.map(elmnt => <Col md={3}><Input type="text" className="element-input-component" readOnly={true} value={elmnt} /></Col> );
           break;
 
         case INPUT_OUTPUT_TYPES.GRAPH:
@@ -44,7 +44,7 @@ export default class AlgorithmOutput extends Component {
 
       switch (this.props.outputType) {
         case INPUT_OUTPUT_TYPES.LIST:
-          outputPart = this.props.results.output.map(elmnt => <Col md={2}><Input type="text" className="element-output-component" readOnly={true} value={elmnt} /></Col> );
+          outputPart = this.props.results.output.map(elmnt => <Col md={3}><Input type="text" className="element-output-component" readOnly={true} value={elmnt} /></Col> );
           break;
 
         case INPUT_OUTPUT_TYPES.GRAPH:
@@ -63,15 +63,18 @@ export default class AlgorithmOutput extends Component {
       }
 
       outputHtml = (
-        <Col md={6}>
+        <Col md={12}>
           <Row>
-            {inputPart}
+            <h5>INPUT</h5>
+            <Row>{inputPart}</Row>
           </Row>
           <Row>
-            {outputPart}
+            <h5>OUTPUT</h5>
+            <Row>{outputPart}</Row>
           </Row>
           <Row>
-            <p>Execution Time: {this.props.results['execution_time']}</p>
+            <h5>EXECUTION TIME</h5>
+            <Row><Col><Input type="text" className="element-execution-time-component" readOnly={true} value={this.props.results['execution_time']} /></Col></Row>
           </Row>
         </Col>
       );
@@ -89,7 +92,7 @@ export default class AlgorithmOutput extends Component {
                    x   : xPlot,
                    y   : yPlot,
                 type   : "scatter",
-                mode   : "lines+points",
+                mode   : "markers",
                 marker : {
                   color : "blue"
                 }

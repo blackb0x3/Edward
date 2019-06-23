@@ -79,7 +79,7 @@ export default class Algorithm extends Component {
       .then(resp => {
         console.log(resp.data);
 
-        this.setState({algorithmOutput: <AlgorithmOutput algorithmName={this.state.name} action={this.state.action} results={resp.data} inputType={this.props.inputType} />})
+        this.setState({algorithmOutput: <AlgorithmOutput algorithmName={this.state.name} action={this.state.action} results={resp.data} inputType={this.props.inputType} outputType={this.props.outputType} />})
       })
       .catch(err => console.log(err));
   }
