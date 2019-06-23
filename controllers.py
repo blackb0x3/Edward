@@ -5,7 +5,7 @@ from flask import send_file
 from pymongo import MongoClient
 from typing import Dict
 
-from scripts import Sorts
+from scripts import Sorts, Search
 from scripts.Chart import CompareChart, TestChart
 from config import ROOT_DIR, DEFAULT_MIN_COLLECTION_SIZE, DEFAULT_MAX_COLLECTION_SIZE
 
@@ -63,7 +63,22 @@ sorts = {
     }
 }
 
-algorithmmap = {**sorts} # type: Dict[str, Algorithm]
+search = {
+    "linear-search": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Linear Search",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Search.LinearSearch
+    },
+    "bi-linear-search": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Bi-linear Search",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Search.BilinearSearch
+    },
+    "binary-search": {
+        ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY : "Binary Search",
+                         ALGORITHM_OBJECT_CLASS_DICT_KEY : Search.BinarySearch
+    }
+}
+
+algorithmmap = {**sorts, **search} # type: Dict[str, Algorithm]
 
 
 class AlgorithmListController(Resource):
@@ -364,5 +379,7 @@ class AlgorithmTypesController(Resource):
     def get(self, algorithmtype):
         if algorithmtype == "sorting":
             return self._get_keys_with_frontend_names(list(sorts.keys())), 200
+        elif algorithmtype == "searching":
+            return self._get_keys_with_frontend_names(list(search.keys())), 200
         else:
             abort(400, message="Algorithm type '{0}' does not yet exist within the API.")

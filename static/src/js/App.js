@@ -26,7 +26,13 @@ export default class App extends Component {
   }
 
   render() {
-    let insertionSortKey = "insertion-sort"
+    let insertionSortKey = "insertion-sort";
+    let selectionSortKey = "selection-sort";
+    let countingSortKey = "counting-sort";
+    let linearSearchKey = "linear-search";
+    let bilinearSearchKey = "bi-linear-search";
+    let binarySearchKey = "binary-search";
+
     return (
       <div>
         <BrowserRouter>
@@ -52,11 +58,47 @@ export default class App extends Component {
 
           <Route
             exact
+            path="/sorting/selection-sort"
+            render={ (props) => <Algorithm {...props} algorithmKey={selectionSortKey} inputType={INPUT_OUTPUT_TYPES.LIST} outputType={INPUT_OUTPUT_TYPES.LIST} /> }
+          />
+          
+          <Route
+            exact
+            path="/sorting/counting-sort"
+            render={ (props) => <Algorithm {...props} algorithmKey={countingSortKey} inputType={INPUT_OUTPUT_TYPES.LIST} outputType={INPUT_OUTPUT_TYPES.LIST} /> }
+          />
+
+          <Route
+            exact
             path="/sorting"
             render={ (props) => <AlgorithmType {...props} algorithmType="sorting" /> }
           />
+
+          {/*
+          <Route
+            exact
+            path="/searching/linear"
+            render={ (props) => <Algorithm {...props} algorithmKey={linearSearchKey} inputType={INPUT_OUTPUT_TYPES.LIST} outputType={INPUT_OUTPUT_TYPES.NUMBER} /> }
+          />
           
-          {/* <Route exact path="/sorting/selection-sort" component={Algorithm} /> */}
+          <Route
+            exact
+            path="/searching/bilinear"
+            render={ (props) => <Algorithm {...props} algorithmKey={bilinearSearchKey} inputType={INPUT_OUTPUT_TYPES.LIST} outputType={INPUT_OUTPUT_TYPES.NUMBER} /> }
+          />
+
+          <Route
+            exact
+            path="/searching/binary"
+            render={ (props) => <Algorithm {...props} algorithmKey={binarySearchKey} inputType={INPUT_OUTPUT_TYPES.LIST} outputType={INPUT_OUTPUT_TYPES.NUMBER} /> }
+          />
+          */}
+
+          <Route
+            exact
+            path="/searching"
+            render={ (props) => <AlgorithmType {...props} algorithmType="searching" /> }
+          />
         </BrowserRouter>
       </div>
     );
