@@ -126,14 +126,14 @@ Runs the algorithm and returns the execution statistics. These statistics vary b
 #### POST Options
 
 key | action | collection | options | verbose
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
-description | run,test,compare | a data structure for the algorithm to execute | parameters used for test and compare actions to generate a data structure for your algorithm ([see below]()) | set to ```true``` to return data at each stage when performing a ```test``` or ```compare``` action
+--- | ------ | ---------- | ------- | -------
+description | run,test,compare | a data structure for the algorithm to execute | parameters used for test and compare actions to generate a data structure for your algorithm (see below) | set to ```true``` to return data at each stage when performing a ```test``` or ```compare``` action
 type | string | list,json | json | boolean
 
 #### ```run``` and ```test``` options
 
 option | min_size | max_size | jump | repeats
---- | --- | --- | --- |--- |--- |--- |--- |--- |--- |--- |---
+--- | --- | --- | --- | ---
 description | minimum number of elements in the data structure | minimum number of elements in the data structure | element sizes to skip | number of times to repeat the experiment
 type | int | int | int | int
 default | 5 | 20 | 1 | 5
