@@ -14,7 +14,7 @@ export default class Home extends Component {
     return (
       <Jumbotron>
         <h1 className="display-3">Edward</h1>
-        <p className="lead">A React + Python application demonstrating time and space complexities of various algorithms and data structures.</p>
+        <p className="lead">A React x Python application demonstrating time and space complexities of various algorithms and data structures.</p>
         <hr/>
         <p>New features are being added to the site regularly!</p>
         <p className="lead">
