@@ -304,6 +304,7 @@ class AlgorithmController(Resource):
         except NotImplementedError:
             abort(501, message="The {} algorithm has not been implemented yet.".format(algorithmname))
 
+        # TODO RequestParser is obsolete - update with new request parser.
         parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("action", type=str, required=True, location='json')
         parser.add_argument("makegraph", type=bool, default=False, store_missing=True, location='json')
@@ -339,10 +340,10 @@ class AlgorithmController(Resource):
 
             # error checking in options parameter
             if int(options['min_size']) < 5:
-                abort(400, message="The test collections must have at least 5 elements.")
+                abort(400, message="The smallest test collection must have at least 5 elements.")
 
             if int(options['max_size']) < 10:
-                abort(400, message="The last test collection must have at least 10 elements.")
+                abort(400, message="The largest test collection must have at least 10 elements.")
 
             if int(options['jump']) < 1:
                 abort(400, message="Invalid number of collection sizes to jump. Must be greater than or equal to 1.")
