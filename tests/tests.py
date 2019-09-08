@@ -1,12 +1,20 @@
 import requests, unittest
 
+BASE_URL = "http://localhost:5000"
 
 class AlgorithmListControllerTests(unittest.TestCase):
     def test_get(self):
         # given no parameters
         # when performing a GET to /api/algorithms
+        response = requests.get(f"{BASE_URL}/api/algorithms").json()
+
         # then expect HTTP 200 OK - list of available algorithm keys
-        pass
+        key = "available_algorithms"
+
+        # check structure of response, rather than actual data
+        self.assertTrue(key in response.keys())
+        self.assertTrue(type(response[key]) is list)
+        self.assertTrue(all(type(entry).__name__ == "str" for entry in response[key]))
 
 
 class AlgorithmTypesControllerTests(unittest.TestCase):
@@ -121,3 +129,6 @@ class AlgorithmControllerTests(unittest.TestCase):
         # when performing a POST to /api/algorithms/<algorithm_key>
         # then expect HTTP 200 OK - experiment result
         pass
+
+if __name__ == "__main__":
+    unittest.main()
