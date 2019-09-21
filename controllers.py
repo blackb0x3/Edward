@@ -383,4 +383,4 @@ class AlgorithmTypesController(Resource):
         elif algorithmtype == "searching":
             return self._get_keys_with_frontend_names(list(search.keys())), 200
         else:
-            abort(400, message="Algorithm type '{0}' does not yet exist within the API.")
+            abort(400, message="Algorithm type '{0}' does not exist within the API.")
