@@ -5,7 +5,7 @@ from flask import send_file
 from pymongo import MongoClient
 from typing import Dict
 
-from scripts import Sorts, Search
+from scripts import Sorts, Search, Algorithm
 from scripts.Chart import CompareChart, TestChart
 from config import ROOT_DIR, DEFAULT_MIN_COLLECTION_SIZE, DEFAULT_MAX_COLLECTION_SIZE
 
@@ -78,7 +78,7 @@ search = {
     }
 }
 
-algorithmmap = {**sorts, **search} # type: Dict[str, Algorithm]
+algorithmmap = {**sorts, **search, "dummy-unavailable-alg": Algorithm.Algorithm}
 
 
 class AlgorithmListController(Resource):

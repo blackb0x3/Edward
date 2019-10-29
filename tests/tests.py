@@ -78,22 +78,41 @@ class AlgorithmControllerTests(unittest.TestCase):
 
     def test_get_valid_arg_unavailable(self):
         # given valid algorithm key
+        unavailable_key = "dummy-unavailable-alg"
+        
         # when performing a GET to /api/algorithms/<algorithm_key>
+        response_with_http = requests.get(f"{BASE_URL}/api/algorithms/{unavailable_key}")
+        response = response_with_http.json()
+        
         # if algorithm is unavailable
         # then expect HTTP 501 NOT IMPLEMENTED
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == 501)
 
     def test_get_invalid_arg(self):
         # given invalid algorithm key
+        invalid_key = "some-weird-key-asdf"
+        
         # when performing a GET to /api/algorithms/<algorithm_key>
+        response_with_http = requests.get(f"{BASE_URL}/api/algorithms/{invalid_key}")
+        response = response_with_http.json()
+        
         # then expect HTTP 404 response
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == 404)
 
     def test_post_not_implemented(self):
         # given valid POST request
+        not_implemented_key = "dummy-unavailable-arg"
+        req = {}
+        
         # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{not_implemented_key}", json=req)
+        response = response_with_http.json()
+        
         # then expect HTTP 501
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == 501)
 
     def test_post_no_action(self):
         # given POST request with no 'action' entry in JSON
