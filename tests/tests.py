@@ -169,27 +169,42 @@ class AlgorithmControllerTests(unittest.TestCase):
 
     def test_post_invalid_jump(self):
         # given POST request with invalid 'jump' entry in 'options' JSON
+        algorithm_key = "insertion-sort"
+        req = { collection: [], action: "test", options: { jump: 0 } }
+
         # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{algorithm_key}", json=req)
+        repsonse = response_with_http.json()
+
         # then expect HTTP 400
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
 
     def test_post_invalid_repeats(self):
         # given POST request with invalid 'repeats' entry in 'options' JSON
+        algorithm_key = "insertion-sort"
+        req = { collection: [], action: "test", options: { repeats: 0 } }
+
         # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{algorithm_key}", json=req)
+        repsonse = response_with_http.json()
+
         # then expect HTTP 400
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
 
     def test_post_algorithm_type(self):
         # given POST request comparing two algorithms which solve different problems
-        # when performing a POST to /api/algorithms/<algorithm_key>
-        # then expect HTTP 400
-        pass
+        first = "insertion-sort"
+        second = "binary-search"
 
-    def test_post_max_min_size(self):
-        # given POST request where max_size is lower than min_size
         # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{algorithm_key}", json=req)
+        repsonse = response_with_http.json()
+
         # then expect HTTP 400
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
 
     def test_post_valid_request_run(self):
         # given valid post body with 'run' action
