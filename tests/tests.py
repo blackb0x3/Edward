@@ -1,4 +1,5 @@
 import requests, unittest
+from http import HTTPStatus
 
 BASE_URL = "http://localhost:5000"
 
@@ -14,7 +15,7 @@ class AlgorithmListControllerTests(unittest.TestCase):
 
         # then expect HTTP 200 OK - list of available algorithm keys
         self.assertTrue(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 200)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.OK)
         correct_key = "available_algorithms"
         self.assertTrue(correct_key in response.keys())
         self.assertTrue(type(response[correct_key]) is list)
@@ -33,7 +34,7 @@ class AlgorithmTypesControllerTests(unittest.TestCase):
 
         # then expect list of available algorithm keys of that type
         self.assertTrue(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 200)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.OK)
         self.assertTrue(type(response) is dict)
         self.assertTrue(len(response.keys()) > 0)
         self.assertTrue(all([type(key).__name__ == "str" for key in response.keys()]))
@@ -46,7 +47,7 @@ class AlgorithmTypesControllerTests(unittest.TestCase):
 
         # then expect HTTP 404 response
         self.assertFalse(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 404)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.NOT_FOUND)
 
     def test_get_invalid_arg(self):
         # given invalid algorithm type key
@@ -58,7 +59,7 @@ class AlgorithmTypesControllerTests(unittest.TestCase):
 
         # then expect HTTP 400 response
         self.assertFalse(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 400)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
         self.assertEqual(response["message"], f"Algorithm type '{invalid_key}' does not exist within the API.")
 
 
@@ -74,7 +75,7 @@ class AlgorithmControllerTests(unittest.TestCase):
         # if algorithm is available
         # then expect HTTP 200 OK - algorithm JSON metadata
         self.assertTrue(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 200)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.OK)
 
     def test_get_valid_arg_unavailable(self):
         # given valid algorithm key
@@ -87,7 +88,7 @@ class AlgorithmControllerTests(unittest.TestCase):
         # if algorithm is unavailable
         # then expect HTTP 501 NOT IMPLEMENTED
         self.assertFalse(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 501)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.NOT_IMPLEMENTED)
 
     def test_get_invalid_arg(self):
         # given invalid algorithm key
@@ -99,7 +100,7 @@ class AlgorithmControllerTests(unittest.TestCase):
         
         # then expect HTTP 404 response
         self.assertFalse(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 404)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.NOT_FOUND)
 
     def test_post_not_implemented(self):
         # given valid POST request
@@ -112,31 +113,59 @@ class AlgorithmControllerTests(unittest.TestCase):
         
         # then expect HTTP 501
         self.assertFalse(response_with_http.ok())
-        self.assertTrue(response_with_http.status_code == 501)
+        self.assertTrue(response_with_http.status_code == HTTPStatus.NOT_IMPLEMENTED)
 
     def test_post_no_action(self):
         # given POST request with no 'action' entry in JSON
+        algorithm_key = "insertion-sort"
+        req = { collection: [] }
+
         # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{algorithm_key}", json=req)
+        response = response_with_http.json()
+
         # then expect HTTP 400
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
 
     def test_pot_invalid_action(self):
         # given POST request with invalid 'action' entry in JSON
+        algorithm_key = "insertion-sort"
+        req = { collection: [], action: "fake" }
+
         # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{algorithm_key}", json=req)
+        repsonse = response_with_http.json()
+
         # then expect HTTP 400
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
 
     def test_post_invalid_min_size(self):
         # given POST request with invalid 'min_size' entry in 'options' JSON
-        # when performing a POST to /api/algorithms/<algorithm_key>
-        # then expect HTTP 400
-        pass
+        algorithm_key = "insertion-sort"
+        req = { collection: [], action: "test", options: { min_size: -2 } }
 
-    def test_post_invalid_max_size(self):
-        # given POST request with invalid 'max_size' entry in 'options' JSON
         # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{algorithm_key}", json=req)
+        repsonse = response_with_http.json()
+
         # then expect HTTP 400
-        pass
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
+
+    def test_post_min_greater_than_max(self):
+        # given POST request where 'min_size' is bigger than 'max_size'
+        algorithm_key = "insertion-sort"
+        req = { collection: [], action: "test", options: { min_size: 10, max_size: 8 } }
+
+        # when performing a POST to /api/algorithms/<algorithm_key>
+        response_with_http = requests.post(f"{BASE_URL}/api/algorithms/{algorithm_key}", json=req)
+        repsonse = response_with_http.json()
+
+        # then expect HTTP 400
+        self.assertFalse(response_with_http.ok())
+        self.assertTrue(response_with_http.status_code == HTTPStatus.BAD_REQUEST)
 
     def test_post_invalid_jump(self):
         # given POST request with invalid 'jump' entry in 'options' JSON
