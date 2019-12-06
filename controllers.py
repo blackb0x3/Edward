@@ -7,7 +7,7 @@ from typing import Dict
 
 from scripts import Sorts, Search, Algorithm
 from scripts.Chart import CompareChart, TestChart
-from config import ROOT_DIR, DEFAULT_MIN_COLLECTION_SIZE, DEFAULT_MAX_COLLECTION_SIZE
+from config import ROOT_DIR, DEFAULT_MIN_COLLECTION_SIZE, DEFAULT_MAX_COLLECTION_SIZE, ABS_MIN_COLLECTION_SIZE
 
 ALGORITHM_TYPE_CONTROLLER_INTERNAL_NAME_DICT_KEY = "name"
 ALGORITHM_OBJECT_CLASS_DICT_KEY = "class"
@@ -193,13 +193,10 @@ class AlgorithmController(Resource):
             # must be at least 5
             min_size = options.get('min_size', DEFAULT_MIN_COLLECTION_SIZE)
 
-            if min_size < DEFAULT_MIN_COLLECTION_SIZE:
-                min_size = DEFAULT_MIN_COLLECTION_SIZE
+            if min_size < ABS_MIN_COLLECTION_SIZE:
+                abort(400, message="The min_size ({0}) is less than the absolute minimum number of elements required ({1})".format(min_size, ABS_MIN_COLLECTION_SIZE))
 
             max_size = options.get('max_size', DEFAULT_MAX_COLLECTION_SIZE)
-
-            if max_size < DEFAULT_MAX_COLLECTION_SIZE:
-                max_size = DEFAULT_MAX_COLLECTION_SIZE
 
             if max_size <= min_size:
                 abort(400, message="The max size ({0}) is less than the min size ({1})".format(max_size, min_size))
